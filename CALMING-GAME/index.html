@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Calming — Gentle Affirmations</title>
+  <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; overflow: hidden; }
+    body {
+      font-family: "Segoe UI", "Helvetica Neue", system-ui, sans-serif;
+      background: linear-gradient(180deg, #0d1b2a 0%, #1a237e 25%, #0d47a1 50%, #1565c0 75%, #0d1b2a 100%);
+      -webkit-tap-highlight-color: transparent;
+    }
+    #canvas-container {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      touch-action: none;
+    }
+    #canvas-container canvas { display: block; width: 100%; height: 100%; }
+    #start-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(180deg, rgba(13, 27, 42, 0.92) 0%, rgba(26, 35, 126, 0.88) 50%, rgba(13, 27, 42, 0.92) 100%);
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+      cursor: pointer;
+    }
+    #start-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+    #start-overlay p {
+      color: rgba(255, 255, 255, 0.85);
+      font-size: clamp(1rem, 3.5vw, 1.2rem);
+      font-weight: 300;
+      letter-spacing: 0.05em;
+      padding: 1rem 2rem;
+    }
+    #affirmation {
+      position: fixed;
+      left: 50%;
+      bottom: 22%;
+      transform: translateX(-50%);
+      z-index: 10;
+      max-width: 92%;
+      padding: 1.5rem 2rem;
+      color: rgba(255, 255, 255, 0.98);
+      font-size: clamp(1.1rem, 4.2vw, 1.5rem);
+      font-weight: 400;
+      text-align: center;
+      line-height: 1.65;
+      text-shadow: 0 2px 24px rgba(0, 0, 0, 0.4);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.9s ease;
+    }
+    #affirmation.visible {
+      opacity: 1;
+      animation: affirmation-in 0.8s ease;
+    }
+    @keyframes affirmation-in {
+      from { transform: translateX(-50%) translateY(12px); opacity: 0; }
+      to { transform: translateX(-50%) translateY(0); opacity: 1; }
+    }
+    #hint {
+      position: fixed;
+      left: 50%;
+      bottom: 1.5rem;
+      transform: translateX(-50%);
+      z-index: 5;
+      color: rgba(255, 255, 255, 0.55);
+      font-size: 0.9rem;
+      transition: opacity 0.5s ease;
+    }
+    #hint.hidden { opacity: 0; pointer-events: none; }
+    #mute-btn {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 20;
+      width: 44px;
+      height: 44px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.12);
+      color: rgba(255, 255, 255, 0.9);
+      cursor: pointer;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, transform 0.2s;
+    }
+    #mute-btn:hover { background: rgba(255, 255, 255, 0.22); transform: scale(1.05); }
+  </style>
+</head>
+<body>
+  <div id="canvas-container"></div>
+  <div id="start-overlay" role="button" tabindex="0" aria-label="Tap to begin">
+    <p>Tap anywhere to begin</p>
+  </div>
+  <div id="affirmation" aria-live="polite"></div>
+  <p id="hint">Tap or click a falling petal</p>
+  <button id="mute-btn" type="button" aria-label="Toggle music">♪</button>
+
+  <script>
+(function () {
+  'use strict';
+
+  // ——— Affirmations (longer, pang-palakas ng loob) ———
+  var AFFIRMATIONS = [
+    'You are safe here. Let yourself feel it.',
+    "It's okay to rest. Your body and mind deserve it.",
+    'You deserve kindness—especially from yourself.',
+    'Breathe. This moment is yours. Nothing else is required.',
+    'You are enough, exactly as you are.',
+    'Softness is allowed. You don\'t have to be strong all the time.',
+    "Let go of what you don't need to carry. You've been holding it long enough.",
+    'You are worthy of peace. It is not selfish to claim it.',
+    'Take your time. Rushing is not a requirement.',
+    'You are held. Even when it doesn\'t feel like it.',
+    'Be gentle with yourself. You\'re doing the best you can.',
+    'This too shall pass, gently. You will get through this.',
+    'Your feelings are valid. They don\'t need to be justified.',
+    'Rest is part of healing. Allow yourself to recover.',
+    'You matter. Your presence in this world has meaning.'
+  ];
+
+  // ——— Audio ———
+  var pianoAudio = null;
+  var audioContext = null;
+  var pianoStarted = false;
+
+  function initPiano() {
+    if (pianoAudio) return;
+    pianoAudio = new Audio('audio/calm-classical-piano-291012.mp3');
+    pianoAudio.loop = true;
+    pianoAudio.volume = 0.35;
+    pianoAudio.preload = 'auto';
+  }
+
+  function startPianoOnInteraction() {
+    if (pianoStarted) return;
+    pianoStarted = true;
+    initPiano();
+    if (pianoAudio) pianoAudio.play().catch(function () {});
+  }
+
+  function playChime() {
+    try {
+      if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      var ctx = audioContext;
+      var now = ctx.currentTime;
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(784, now);
+      osc.frequency.exponentialRampToValueAtTime(392, now + 0.5);
+      gain.gain.setValueAtTime(0, now);
+      gain.gain.linearRampToValueAtTime(0.06, now + 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.9);
+      osc.start(now);
+      osc.stop(now + 0.9);
+    } catch (e) {}
+  }
+
+  // ——— UI ———
+  var affirmationEl = document.getElementById('affirmation');
+  var hintEl = document.getElementById('hint');
+  var muteBtn = document.getElementById('mute-btn');
+  var musicMuted = false;
+
+  var hintShown = true;
+  function showAffirmation(text) {
+    affirmationEl.textContent = text;
+    affirmationEl.classList.add('visible');
+    clearTimeout(affirmationEl._hide);
+    affirmationEl._hide = setTimeout(function () {
+      affirmationEl.classList.remove('visible');
+    }, 8000);
+    if (hintShown) {
+      hintShown = false;
+      hintEl.classList.add('hidden');
+    }
+  }
+
+  function toggleMute() {
+    musicMuted = !musicMuted;
+    if (pianoAudio) pianoAudio.muted = musicMuted;
+    muteBtn.textContent = musicMuted ? '\u2014' : '\u266A';
+    muteBtn.title = musicMuted ? 'Unmute music' : 'Mute music';
+    muteBtn.setAttribute('aria-label', musicMuted ? 'Unmute music' : 'Mute music');
+  }
+
+  muteBtn.addEventListener('click', function (e) { e.stopPropagation(); toggleMute(); });
+
+  var startOverlay = document.getElementById('start-overlay');
+  var overlayDismissed = false;
+  function dismissStartOverlay() {
+    if (overlayDismissed) return;
+    overlayDismissed = true;
+    startOverlay.classList.add('hidden');
+    startPianoOnInteraction();
+  }
+  startOverlay.addEventListener('click', dismissStartOverlay);
+  startOverlay.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); dismissStartOverlay(); } });
+
+  // ——— WebGL support check ———
+  function webGLSupported() {
+    try {
+      var c = document.createElement('canvas');
+      var gl = c.getContext('webgl') || c.getContext('experimental-webgl');
+      return !!gl;
+    } catch (e) { return false; }
+  }
+
+  var container = document.getElementById('canvas-container');
+
+  function initWebGL() {
+    try {
+      var scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x0d1b2a);
+      scene.fog = new THREE.FogExp2(0x0d1b2a, 0.04);
+
+      var camera = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
+      camera.position.set(0, 0, 12);
+      camera.lookAt(0, 0, 0);
+
+      var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(container.clientWidth, container.clientHeight);
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 0.9;
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      container.appendChild(renderer.domElement);
+
+  // Soft lighting (cool blue)
+  var ambient = new THREE.AmbientLight(0x4a6fa5, 0.5);
+  scene.add(ambient);
+  var point1 = new THREE.PointLight(0x7eb8da, 0.6, 30);
+  point1.position.set(4, 4, 6);
+  scene.add(point1);
+  var point2 = new THREE.PointLight(0x5c9ead, 0.4, 25);
+  point2.position.set(-5, -2, 5);
+  scene.add(point2);
+
+  // Petals — each has a unique message (no repeat until all shown)
+  var petalGroup = new THREE.Group();
+  scene.add(petalGroup);
+
+  // Petal bomb / burst + halo (emotional release animation)
+  var burstGroup = new THREE.Group();
+  scene.add(burstGroup);
+  var BURST_DURATION = 1.0;
+  var HALO_DURATION = 0.9;
+  function createBurstAt(point) {
+    var ringGeom = new THREE.RingGeometry(0.15, 0.35, 32);
+    var haloMat = new THREE.MeshBasicMaterial({
+      color: 0xffe4e6,
+      transparent: true,
+      opacity: 0.9,
+      side: THREE.DoubleSide
+    });
+    var halo = new THREE.Mesh(ringGeom, haloMat);
+    halo.position.copy(point);
+    halo.rotation.x = -Math.PI / 2;
+    halo.userData = { isHalo: true, life: 1 };
+    burstGroup.add(halo);
+    var particleGeom = new THREE.PlaneGeometry(0.25, 0.5);
+    var colors = [0xf8d7da, 0xffe4e6, 0xffd1dc, 0xe8e0f0];
+    for (var i = 0; i < 14; i++) {
+      var angle = (i / 14) * Math.PI * 2 + Math.random() * 0.5;
+      var speed = 1.8 + Math.random() * 1.2;
+      var vx = Math.cos(angle) * speed;
+      var vz = Math.sin(angle) * speed;
+      var vy = (Math.random() - 0.3) * 1.5;
+      var mat = new THREE.MeshBasicMaterial({
+        color: colors[i % colors.length],
+        transparent: true,
+        opacity: 0.95,
+        side: THREE.DoubleSide
+      });
+      var mesh = new THREE.Mesh(particleGeom.clone(), mat);
+      mesh.position.copy(point);
+      mesh.userData = { vx: vx, vy: vy, vz: vz, life: 1 };
+      burstGroup.add(mesh);
+    }
+  }
+
+  var raycaster = new THREE.Raycaster();
+  var mouse = new THREE.Vector2();
+
+  var affirmationQueue = [];
+  var queueIndex = 0;
+  function buildAffirmationQueue() {
+    for (var i = 0; i < AFFIRMATIONS.length; i++) affirmationQueue[i] = i;
+    for (var j = affirmationQueue.length - 1; j > 0; j--) {
+      var k = Math.floor(Math.random() * (j + 1));
+      var tmp = affirmationQueue[j];
+      affirmationQueue[j] = affirmationQueue[k];
+      affirmationQueue[k] = tmp;
+    }
+    queueIndex = 0;
+  }
+  function nextAffirmationIndex() {
+    var idx = affirmationQueue[queueIndex];
+    queueIndex = (queueIndex + 1) % AFFIRMATIONS.length;
+    if (queueIndex === 0) buildAffirmationQueue();
+    return idx;
+  }
+  buildAffirmationQueue();
+
+  var PETAL_COLORS = [
+    '#f8d7da', '#ffe4e6', '#e8d5e2', '#d4e4f7', '#faf0e6', '#ffd1dc', '#e6e6fa', '#ffeef2', '#e8e0f0'
+  ];
+  var petalGeometry = new THREE.PlaneGeometry(1, 1);
+  function makePetalTexture(color) {
+    var size = 128;
+    var canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    var ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, size, size);
+    ctx.save();
+    ctx.translate(size / 2, size / 2);
+    ctx.scale(0.5, 1);
+    ctx.beginPath();
+    ctx.moveTo(0, -50);
+    ctx.bezierCurveTo(35, -30, 35, 30, 0, 50);
+    ctx.bezierCurveTo(-35, 30, -35, -30, 0, -50);
+    ctx.closePath();
+    ctx.fillStyle = color;
+    ctx.globalAlpha = 0.95;
+    ctx.fill();
+    ctx.restore();
+    var tex = new THREE.CanvasTexture(canvas);
+    tex.needsUpdate = true;
+    return tex;
+  }
+  var petalTextures = {};
+  function getPetalTexture(color) {
+    if (!petalTextures[color]) petalTextures[color] = makePetalTexture(color);
+    return petalTextures[color];
+  }
+  function createPetal() {
+    var geometry = petalGeometry.clone();
+    var color = PETAL_COLORS[Math.floor(Math.random() * PETAL_COLORS.length)];
+    var texture = getPetalTexture(color);
+    var material = new THREE.MeshBasicMaterial({
+      map: texture,
+      side: THREE.DoubleSide,
+      transparent: true,
+      alphaTest: 0.15,
+      depthWrite: true
+    });
+    var mesh = new THREE.Mesh(geometry, material);
+    var scale = 1.8 + Math.random() * 1.2;
+    mesh.scale.set(scale, scale, 1);
+    mesh.userData.baseScale = scale;
+    mesh.position.set(
+      (Math.random() - 0.5) * 22,
+      (Math.random() - 0.5) * 18 + 2,
+      (Math.random() - 0.5) * 10 - 3
+    );
+    mesh.rotation.z = Math.random() * Math.PI * 2;
+    mesh.rotation.y = (Math.random() - 0.5) * Math.PI * 0.6;
+    mesh.rotation.x = (Math.random() - 0.5) * 0.3;
+    mesh.userData.speed = 0.022 + Math.random() * 0.012;
+    mesh.userData.phase = Math.random() * Math.PI * 2;
+    mesh.userData.sway = 0.025 + Math.random() * 0.015;
+    mesh.userData.spin = (Math.random() - 0.5) * 0.03;
+    mesh.userData.fading = false;
+    mesh.userData.scale = 1;
+    mesh.userData.opacity = 1;
+    mesh.userData.affirmationIndex = nextAffirmationIndex();
+    petalGroup.add(mesh);
+    return mesh;
+  }
+
+  var petalCount = 80;
+  for (var i = 0; i < petalCount; i++) createPetal();
+
+  var lastTapTime = 0;
+  var TAP_COOLDOWN_MS = 350;
+  function onPointerDown(event) {
+    if (!overlayDismissed) dismissStartOverlay();
+    if (event && event.clientX != null) {
+      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    }
+    if (Date.now() - lastTapTime < TAP_COOLDOWN_MS) return;
+    raycaster.setFromCamera(mouse, camera);
+    var intersects = raycaster.intersectObjects(petalGroup.children, true);
+    if (intersects.length === 0) return;
+    var obj = intersects[0].object;
+    if (!obj.userData || obj.userData.fading) return;
+    lastTapTime = Date.now();
+    obj.userData.fading = true;
+    playChime();
+    createBurstAt(intersects[0].point.clone());
+    var msgIndex = obj.userData.affirmationIndex;
+    if (typeof msgIndex === 'number' && AFFIRMATIONS[msgIndex]) {
+      showAffirmation(AFFIRMATIONS[msgIndex]);
+    }
+  }
+
+  function updateMouseFromEvent(e) {
+    var x = e.clientX !== undefined ? e.clientX : (e.touches && e.touches[0] && e.touches[0].clientX);
+    var y = e.clientY !== undefined ? e.clientY : (e.touches && e.touches[0] && e.touches[0].clientY);
+    if (x !== undefined && y !== undefined) {
+      mouse.x = (x / window.innerWidth) * 2 - 1;
+      mouse.y = -(y / window.innerHeight) * 2 + 1;
+    }
+  }
+
+  container.addEventListener('mousemove', updateMouseFromEvent);
+  container.addEventListener('touchmove', function (e) {
+    if (e.touches.length) updateMouseFromEvent(e);
+  }, { passive: true });
+  container.addEventListener('mousedown', function (e) {
+    updateMouseFromEvent(e);
+    onPointerDown(e);
+  });
+  container.addEventListener('touchstart', function (e) {
+    if (e.touches.length) updateMouseFromEvent(e);
+  }, { passive: true });
+  container.addEventListener('touchend', function (e) {
+    if (e.changedTouches && e.changedTouches[0]) {
+      var t = e.changedTouches[0];
+      mouse.x = (t.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(t.clientY / window.innerHeight) * 2 + 1;
+      onPointerDown({ clientX: t.clientX, clientY: t.clientY });
+    }
+    e.preventDefault();
+  }, { passive: false });
+
+  function resize() {
+    var w = container.clientWidth;
+    var h = container.clientHeight;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  var clock = new THREE.Clock();
+  function animate() {
+    requestAnimationFrame(animate);
+    var dt = clock.getDelta();
+    var t = clock.getElapsedTime();
+
+    for (var i = petalGroup.children.length - 1; i >= 0; i--) {
+      var mesh = petalGroup.children[i];
+      var u = mesh.userData;
+      if (!u) continue;
+
+      if (u.fading) {
+        u.opacity -= dt * 2.2;
+        u.scale *= 0.88;
+        var s = mesh.userData.baseScale !== undefined ? mesh.userData.baseScale : 1;
+        mesh.scale.setScalar(s * u.scale);
+        mesh.material.opacity = u.opacity;
+        if (mesh.material.transparent === false) {
+          mesh.material.transparent = true;
+          mesh.material.depthWrite = false;
+        }
+        if (u.opacity <= 0) {
+          petalGroup.remove(mesh);
+          mesh.geometry.dispose();
+          mesh.material.dispose();
+          createPetal();
+        }
+        continue;
+      }
+
+      mesh.position.y -= u.speed;
+      mesh.position.x += Math.sin(t + u.phase) * u.sway;
+      mesh.rotation.z += u.spin;
+      if (mesh.position.y < -10) {
+        mesh.position.y = 8 + Math.random() * 4;
+        mesh.position.x = (Math.random() - 0.5) * 24;
+        mesh.position.z = (Math.random() - 0.5) * 12 - 4;
+      }
+    }
+
+    for (var b = burstGroup.children.length - 1; b >= 0; b--) {
+      var burstChild = burstGroup.children[b];
+      var u = burstChild.userData;
+      if (!u) continue;
+      var dtB = clock.getDelta();
+      if (u.isHalo) {
+        u.life -= dtB / HALO_DURATION;
+        burstChild.scale.setScalar(1 + (1 - u.life) * 4);
+        burstChild.material.opacity = u.life * 0.85;
+        if (u.life <= 0) {
+          burstGroup.remove(burstChild);
+          burstChild.geometry.dispose();
+          burstChild.material.dispose();
+        }
+      } else {
+        burstChild.position.x += u.vx * dtB;
+        burstChild.position.y += u.vy * dtB;
+        burstChild.position.z += u.vz * dtB;
+        u.life -= dtB / BURST_DURATION;
+        burstChild.material.opacity = u.life;
+        burstChild.rotation.z += 0.1;
+        if (u.life <= 0) {
+          burstGroup.remove(burstChild);
+          burstChild.geometry.dispose();
+          burstChild.material.dispose();
+        }
+      }
+    }
+
+    renderer.render(scene, camera);
+  }
+  animate();
+      return true;
+    } catch (e) { return false; }
+  }
+
+  // ——— 2D canvas fallback when WebGL is unavailable ———
+  function initFallback2D() {
+    container.innerHTML = '';
+    var canvas = document.createElement('canvas');
+    canvas.width = container.clientWidth;
+    canvas.height = container.clientHeight;
+    canvas.style.display = 'block';
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+    container.appendChild(canvas);
+    var ctx = canvas.getContext('2d');
+    var w = canvas.width;
+    var h = canvas.height;
+
+    var fallbackQueue = [];
+    var fallbackQueueIndex = 0;
+    function buildQueue() {
+      for (var i = 0; i < AFFIRMATIONS.length; i++) fallbackQueue[i] = i;
+      for (var j = fallbackQueue.length - 1; j > 0; j--) {
+        var k = Math.floor(Math.random() * (j + 1));
+        var tmp = fallbackQueue[j];
+        fallbackQueue[j] = fallbackQueue[k];
+        fallbackQueue[k] = tmp;
+      }
+      fallbackQueueIndex = 0;
+    }
+    function nextIdx() {
+      var idx = fallbackQueue[fallbackQueueIndex];
+      fallbackQueueIndex = (fallbackQueueIndex + 1) % AFFIRMATIONS.length;
+      if (fallbackQueueIndex === 0) buildQueue();
+      return idx;
+    }
+    buildQueue();
+
+    var PETAL_COLORS_2D = ['#f8d7da', '#ffe4e6', '#e8d5e2', '#d4e4f7', '#faf0e6', '#ffd1dc', '#e6e6fa', '#ffeef2', '#e8e0f0'];
+    var petals = [];
+    var petalCount = 80;
+    var lastTapTime = 0;
+    var TAP_COOLDOWN_MS = 350;
+    var bursts = [];
+    var BURST_DURATION_2D = 1.0;
+    var HALO_DURATION_2D = 0.9;
+
+    function createPetalData() {
+      var baseScale = 18 + Math.random() * 14;
+      return {
+        x: Math.random() * w,
+        y: Math.random() * h,
+        rotation: Math.random() * Math.PI * 2,
+        speed: 0.5 + Math.random() * 0.35,
+        phase: Math.random() * Math.PI * 2,
+        sway: 0.8 + Math.random() * 0.5,
+        spin: (Math.random() - 0.5) * 0.05,
+        color: PETAL_COLORS_2D[Math.floor(Math.random() * PETAL_COLORS_2D.length)],
+        affirmationIndex: nextIdx(),
+        fading: false,
+        opacity: 1,
+        scale: 1,
+        baseScale: baseScale
+      };
+    }
+    for (var i = 0; i < petalCount; i++) petals.push(createPetalData());
+
+    function drawPetal(p) {
+      var scale = (p.baseScale * p.scale) / 50;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rotation);
+      ctx.scale(scale, scale);
+      ctx.globalAlpha = p.opacity;
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.moveTo(0, -50);
+      ctx.bezierCurveTo(35, -30, 35, 30, 0, 50);
+      ctx.bezierCurveTo(-35, 30, -35, -30, 0, -50);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function createBurst2D(cx, cy) {
+      var particles = [];
+      var colors = ['#f8d7da', '#ffe4e6', '#ffd1dc', '#e8e0f0'];
+      for (var i = 0; i < 14; i++) {
+        var angle = (i / 14) * Math.PI * 2 + Math.random() * 0.5;
+        var speed = 45 + Math.random() * 25;
+        particles.push({
+          x: 0, y: 0,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 4,
+          color: colors[i % colors.length],
+          life: 1
+        });
+      }
+      bursts.push({
+        x: cx, y: cy,
+        particles: particles,
+        haloRadius: 0,
+        haloAlpha: 1,
+        startTime: Date.now()
+      });
+    }
+
+    function hitTest(canvasX, canvasY) {
+      for (var i = petals.length - 1; i >= 0; i--) {
+        var p = petals[i];
+        if (p.fading) continue;
+        var dx = canvasX - p.x;
+        var dy = canvasY - p.y;
+        var cos = Math.cos(-p.rotation);
+        var sin = Math.sin(-p.rotation);
+        var lx = dx * cos - dy * sin;
+        var ly = dx * sin + dy * cos;
+        var hh = p.baseScale * p.scale;
+        var hw = 0.7 * hh;
+        if ((lx * lx) / (hw * hw) + (ly * ly) / (hh * hh) <= 1) return p;
+      }
+      return null;
+    }
+
+    function onPointerDown(ev) {
+      if (!overlayDismissed) dismissStartOverlay();
+      var clientX = ev.clientX != null ? ev.clientX : (ev.touches && ev.touches[0] && ev.touches[0].clientX);
+      var clientY = ev.clientY != null ? ev.clientY : (ev.touches && ev.touches[0] && ev.touches[0].clientY);
+      if (clientX == null || clientY == null) return;
+      var rect = canvas.getBoundingClientRect();
+      var scaleX = canvas.width / rect.width;
+      var scaleY = canvas.height / rect.height;
+      var canvasX = (clientX - rect.left) * scaleX;
+      var canvasY = (clientY - rect.top) * scaleY;
+      if (Date.now() - lastTapTime < TAP_COOLDOWN_MS) return;
+      var p = hitTest(canvasX, canvasY);
+      if (!p) return;
+      lastTapTime = Date.now();
+      p.fading = true;
+      playChime();
+      createBurst2D(p.x, p.y);
+      if (typeof p.affirmationIndex === 'number' && AFFIRMATIONS[p.affirmationIndex]) showAffirmation(AFFIRMATIONS[p.affirmationIndex]);
+    }
+
+    canvas.addEventListener('mousedown', function (e) { onPointerDown(e); });
+    canvas.addEventListener('touchstart', function (e) {
+      if (e.touches.length) onPointerDown(e.touches[0]);
+    }, { passive: true });
+    canvas.addEventListener('touchend', function (e) {
+      if (e.changedTouches && e.changedTouches[0]) onPointerDown(e.changedTouches[0]);
+    });
+
+    var startTime = Date.now();
+    function animate2D() {
+      requestAnimationFrame(animate2D);
+      var t = (Date.now() - startTime) / 1000;
+      var dt = 1 / 60;
+
+      var g = ctx.createLinearGradient(0, 0, 0, h);
+      g.addColorStop(0, '#0d1b2a');
+      g.addColorStop(0.25, '#1a237e');
+      g.addColorStop(0.5, '#0d47a1');
+      g.addColorStop(0.75, '#1565c0');
+      g.addColorStop(1, '#0d1b2a');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, w, h);
+
+      for (var b = bursts.length - 1; b >= 0; b--) {
+        var burst = bursts[b];
+        var burstAge = (Date.now() - burst.startTime) / 1000;
+        var haloLife = Math.max(0, 1 - burstAge / HALO_DURATION_2D);
+        burst.haloRadius = burstAge * 90;
+        burst.haloAlpha = haloLife * 0.9;
+        ctx.save();
+        ctx.strokeStyle = 'rgba(255, 228, 230, ' + burst.haloAlpha + ')';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.arc(burst.x, burst.y, burst.haloRadius, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+        for (var j = 0; j < burst.particles.length; j++) {
+          var pt = burst.particles[j];
+          pt.x += pt.vx * dt;
+          pt.y += pt.vy * dt;
+          pt.life -= dt / BURST_DURATION_2D;
+          if (pt.life <= 0) continue;
+          ctx.save();
+          ctx.globalAlpha = pt.life;
+          ctx.fillStyle = pt.color;
+          ctx.translate(burst.x + pt.x, burst.y + pt.y);
+          ctx.beginPath();
+          ctx.ellipse(0, 0, 6, 12, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+        if (haloLife <= 0) bursts.splice(b, 1);
+      }
+
+      for (var i = petals.length - 1; i >= 0; i--) {
+        var p = petals[i];
+        if (p.fading) {
+          p.opacity -= dt * 2.2;
+          p.scale *= 0.88;
+          if (p.opacity <= 0) {
+            petals.splice(i, 1);
+            petals.push(createPetalData());
+          }
+          drawPetal(p);
+          continue;
+        }
+        p.y += p.speed;
+        p.x += Math.sin(t + p.phase) * p.sway;
+        p.rotation += p.spin;
+        if (p.y > h + 50) { p.y = -50; p.x = Math.random() * w; }
+        if (p.y < -50) { p.y = h + 50; p.x = Math.random() * w; }
+        if (p.x < -50) p.x = w + 50;
+        if (p.x > w + 50) p.x = -50;
+        drawPetal(p);
+      }
+    }
+    animate2D();
+
+    window.addEventListener('resize', function () {
+      var cw = container.clientWidth;
+      var ch = container.clientHeight;
+      canvas.width = cw;
+      canvas.height = ch;
+      w = cw;
+      h = ch;
+    });
+  }
+
+  if (!webGLSupported() || !initWebGL()) initFallback2D();
+})();
+  </script>
+</body>
+</html>
