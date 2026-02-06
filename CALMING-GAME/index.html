@@ -6,6 +6,12 @@
   <title>Calming — Gentle Affirmations</title>
   <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
   <style>
+    :root {
+      --dark-color: #1a0a1a;
+      --pink-glow: rgba(255, 105, 180, 0.3);
+      --pink-bright: #ff69b4;
+      --pink-deep: #ff1493;
+    }
     /* Cross-browser reset and consistency (Edge, Chrome, Brave) */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     html {
@@ -22,9 +28,24 @@
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       -webkit-tap-highlight-color: transparent;
-      background: #0d1b2a;
-      background: linear-gradient(180deg, #0d1b2a 0%, #1a237e 25%, #0d47a1 50%, #1565c0 75%, #0d1b2a 100%);
-      background: -webkit-linear-gradient(180deg, #0d1b2a 0%, #1a237e 25%, #0d47a1 50%, #1565c0 75%, #0d1b2a 100%);
+      background-color: var(--dark-color);
+    }
+    /* Night background matching flower page */
+    .night-bg {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      filter: blur(0.1vmin);
+      background-image: 
+        radial-gradient(ellipse at top, transparent 0%, var(--dark-color)),
+        radial-gradient(ellipse at bottom, var(--dark-color), var(--pink-glow)),
+        repeating-linear-gradient(220deg, rgb(20, 5, 20) 0px, rgb(20, 5, 20) 19px, transparent 19px, transparent 22px),
+        repeating-linear-gradient(189deg, rgb(20, 5, 20) 0px, rgb(20, 5, 20) 19px, transparent 19px, transparent 22px),
+        repeating-linear-gradient(148deg, rgb(20, 5, 20) 0px, rgb(20, 5, 20) 19px, transparent 19px, transparent 22px),
+        linear-gradient(90deg, rgb(255, 182, 193), rgb(255, 105, 180));
     }
     #canvas-container {
       position: fixed;
@@ -44,46 +65,6 @@
       -webkit-backface-visibility: hidden;
       backface-visibility: hidden;
     }
-    #start-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      inset: 0;
-      z-index: 30;
-      display: -webkit-box;
-      display: flex;
-      -webkit-flex-direction: column;
-      flex-direction: column;
-      -webkit-box-align: center;
-      align-items: center;
-      -webkit-box-pack: center;
-      justify-content: center;
-      background: rgba(13, 27, 42, 0.92);
-      background: linear-gradient(180deg, rgba(13, 27, 42, 0.92) 0%, rgba(26, 35, 126, 0.88) 50%, rgba(13, 27, 42, 0.92) 100%);
-      background: -webkit-linear-gradient(180deg, rgba(13, 27, 42, 0.92) 0%, rgba(26, 35, 126, 0.88) 50%, rgba(13, 27, 42, 0.92) 100%);
-      -webkit-transition: opacity 0.6s ease, visibility 0.6s ease;
-      transition: opacity 0.6s ease, visibility 0.6s ease;
-      cursor: pointer;
-      -webkit-backface-visibility: hidden;
-      backface-visibility: hidden;
-    }
-    #start-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-    #start-overlay p {
-      color: rgba(255, 255, 255, 0.9);
-      font-size: clamp(1rem, 3.5vw, 1.2rem);
-      font-weight: 300;
-      letter-spacing: 0.05em;
-      padding: 1rem 2rem;
-      -webkit-animation: overlay-pulse 2.5s ease-in-out infinite;
-      animation: overlay-pulse 2.5s ease-in-out infinite;
-    }
-    @-webkit-keyframes overlay-pulse {
-      0%, 100% { opacity: 0.9; -webkit-transform: scale(1); transform: scale(1); }
-      50% { opacity: 1; -webkit-transform: scale(1.03); transform: scale(1.03); }
-    }
-    @keyframes overlay-pulse {
-      0%, 100% { opacity: 0.9; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.03); }
-    }
     #affirmation {
       position: fixed;
       left: 50%;
@@ -99,7 +80,7 @@
       font-weight: 400;
       text-align: center;
       line-height: 1.65;
-      text-shadow: 0 2px 24px rgba(0, 0, 0, 0.4);
+      text-shadow: 0 0 20px var(--pink-bright), 0 0 40px var(--pink-deep);
       opacity: 0;
       pointer-events: none;
       -webkit-transition: opacity 0.9s ease;
@@ -121,84 +102,63 @@
       to { transform: translateX(-50%) translateY(0); opacity: 1; }
     }
     @-webkit-keyframes affirmation-glow {
-      0%, 100% { text-shadow: 0 2px 24px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 255, 255, 0.05); }
-      50% { text-shadow: 0 2px 28px rgba(0, 0, 0, 0.5), 0 0 32px rgba(255, 228, 230, 0.12); }
+      0%, 100% { text-shadow: 0 0 20px var(--pink-bright), 0 0 40px var(--pink-deep); }
+      50% { text-shadow: 0 0 30px var(--pink-bright), 0 0 60px var(--pink-deep), 0 0 80px rgba(255, 105, 180, 0.3); }
     }
     @keyframes affirmation-glow {
-      0%, 100% { text-shadow: 0 2px 24px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 255, 255, 0.05); }
-      50% { text-shadow: 0 2px 28px rgba(0, 0, 0, 0.5), 0 0 32px rgba(255, 228, 230, 0.12); }
+      0%, 100% { text-shadow: 0 0 20px var(--pink-bright), 0 0 40px var(--pink-deep); }
+      50% { text-shadow: 0 0 30px var(--pink-bright), 0 0 60px var(--pink-deep), 0 0 80px rgba(255, 105, 180, 0.3); }
     }
-    #hint {
+    /* Transition Overlay */
+    #transition-overlay {
       position: fixed;
-      left: 50%;
-      bottom: 1.5rem;
-      -webkit-transform: translateX(-50%);
-      transform: translateX(-50%);
-      z-index: 5;
-      color: rgba(255, 255, 255, 0.55);
-      font-size: 0.9rem;
-      -webkit-transition: opacity 0.5s ease;
-      transition: opacity 0.5s ease;
-      -webkit-animation: hint-fade-in 1.2s ease 0.3s both;
-      animation: hint-fade-in 1.2s ease 0.3s both;
-    }
-    @-webkit-keyframes hint-fade-in {
-      from { opacity: 0; -webkit-transform: translateX(-50%) translateY(8px); transform: translateX(-50%) translateY(8px); }
-      to { opacity: 1; -webkit-transform: translateX(-50%) translateY(0); transform: translateX(-50%) translateY(0); }
-    }
-    @keyframes hint-fade-in {
-      from { opacity: 0; transform: translateX(-50%) translateY(8px); }
-      to { opacity: 1; transform: translateX(-50%) translateY(0); }
-    }
-    #hint.hidden { opacity: 0; pointer-events: none; }
-    #mute-btn {
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
-      z-index: 20;
-      width: 44px;
-      height: 44px;
-      border: none;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.12);
-      color: rgba(255, 255, 255, 0.9);
-      cursor: pointer;
-      font-size: 1.25rem;
-      display: -webkit-box;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 100;
+      background: radial-gradient(ellipse at center, var(--pink-bright), var(--pink-deep), var(--dark-color));
+      opacity: 0;
+      visibility: hidden;
       display: flex;
-      -webkit-box-align: center;
+      flex-direction: column;
       align-items: center;
-      -webkit-box-pack: center;
       justify-content: center;
-      -webkit-transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-      transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-      -webkit-backface-visibility: hidden;
-      backface-visibility: hidden;
+      transition: opacity 1s ease, visibility 1s ease;
     }
-    #mute-btn:hover {
-      background: rgba(255, 255, 255, 0.22);
-      -webkit-transform: scale(1.05);
-      transform: scale(1.05);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    #transition-overlay.visible {
+      opacity: 1;
+      visibility: visible;
     }
-    #mute-btn:active {
-      -webkit-transform: scale(0.98);
-      transform: scale(0.98);
+    #transition-overlay .message {
+      color: white;
+      font-size: clamp(1.5rem, 5vw, 2.5rem);
+      font-weight: 300;
+      text-align: center;
+      text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+      animation: float-up 1.5s ease-out;
     }
-    #mute-btn:focus-visible {
-      outline: 2px solid rgba(255, 255, 255, 0.6);
-      outline-offset: 2px;
+    @keyframes float-up {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .flower-icon {
+      font-size: 5rem;
+      margin-bottom: 1.5rem;
+      animation: bloom 1.5s ease-out;
+    }
+    @keyframes bloom {
+      0% { opacity: 0; transform: scale(0) rotate(-180deg); }
+      100% { opacity: 1; transform: scale(1) rotate(0deg); }
     }
   </style>
 </head>
 <body>
+  <div class="night-bg"></div>
   <div id="canvas-container"></div>
-  <div id="start-overlay" role="button" tabindex="0" aria-label="Tap to begin">
-    <p>Tap anywhere to begin</p>
+  <!-- Transition Overlay -->
+  <div id="transition-overlay">
+    <div class="flower-icon">🌸</div>
+    <div class="message">A special surprise awaits...</div>
   </div>
   <div id="affirmation" aria-live="polite"></div>
-  <p id="hint">Tap or click a falling petal</p>
-  <button id="mute-btn" type="button" aria-label="Toggle music">♪</button>
 
   <script>
 (function () {
@@ -222,6 +182,34 @@
     'Rest is part of healing. Allow yourself to recover.',
     'You matter. Your presence in this world has meaning.'
   ];
+
+  // ——— Pop Counter System ———
+  var REQUIRED_POPS = 5;
+  var popCount = 0;
+  var transitionTriggered = false;
+  var transitionOverlay = document.getElementById('transition-overlay');
+
+  function triggerFlowerTransition() {
+    if (transitionTriggered) return;
+    transitionTriggered = true;
+    
+    // Show transition overlay
+    transitionOverlay.classList.add('visible');
+    
+    // Navigate to flower page after animation
+    setTimeout(function() {
+      window.location.href = '../flower/index.html';
+    }, 2500);
+  }
+
+  function incrementPopCount() {
+    if (popCount >= REQUIRED_POPS) return;
+    popCount++;
+    
+    if (popCount >= REQUIRED_POPS) {
+      setTimeout(triggerFlowerTransition, 800);
+    }
+  }
 
   // ——— Audio ———
   var pianoAudio = null;
@@ -265,11 +253,7 @@
 
   // ——— UI ———
   var affirmationEl = document.getElementById('affirmation');
-  var hintEl = document.getElementById('hint');
-  var muteBtn = document.getElementById('mute-btn');
-  var musicMuted = false;
 
-  var hintShown = true;
   function showAffirmation(text) {
     affirmationEl.textContent = text;
     affirmationEl.classList.add('visible');
@@ -277,32 +261,17 @@
     affirmationEl._hide = setTimeout(function () {
       affirmationEl.classList.remove('visible');
     }, 8000);
-    if (hintShown) {
-      hintShown = false;
-      hintEl.classList.add('hidden');
-    }
   }
 
-  function toggleMute() {
-    musicMuted = !musicMuted;
-    if (pianoAudio) pianoAudio.muted = musicMuted;
-    muteBtn.textContent = musicMuted ? '\u2014' : '\u266A';
-    muteBtn.title = musicMuted ? 'Unmute music' : 'Mute music';
-    muteBtn.setAttribute('aria-label', musicMuted ? 'Unmute music' : 'Mute music');
-  }
-
-  muteBtn.addEventListener('click', function (e) { e.stopPropagation(); toggleMute(); });
-
-  var startOverlay = document.getElementById('start-overlay');
-  var overlayDismissed = false;
-  function dismissStartOverlay() {
-    if (overlayDismissed) return;
-    overlayDismissed = true;
-    startOverlay.classList.add('hidden');
+  // Auto-start music on first interaction
+  var musicStarted = false;
+  function startMusicOnInteraction() {
+    if (musicStarted) return;
+    musicStarted = true;
     startPianoOnInteraction();
   }
-  startOverlay.addEventListener('click', dismissStartOverlay);
-  startOverlay.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); dismissStartOverlay(); } });
+  document.addEventListener('click', startMusicOnInteraction, { once: true });
+  document.addEventListener('touchstart', startMusicOnInteraction, { once: true });
 
   // ——— WebGL support check ———
   function webGLSupported() {
@@ -323,14 +292,14 @@
   function initWebGL() {
     try {
       var scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x0d1b2a);
-      scene.fog = new THREE.FogExp2(0x0d1b2a, 0.04);
+      scene.background = null; // Transparent to show night-bg
+      scene.fog = new THREE.FogExp2(0x1a0a1a, 0.03);
 
       var camera = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
       camera.position.set(0, 0, 12);
       camera.lookAt(0, 0, 0);
 
-      var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+      var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       var size = getContainerSize();
       renderer.setSize(size.w, size.h);
@@ -339,13 +308,13 @@
       renderer.outputColorSpace = THREE.SRGBColorSpace;
       container.appendChild(renderer.domElement);
 
-  // Soft lighting (cool blue)
-  var ambient = new THREE.AmbientLight(0x4a6fa5, 0.5);
+  // Soft lighting (warm pink)
+  var ambient = new THREE.AmbientLight(0xff69b4, 0.4);
   scene.add(ambient);
-  var point1 = new THREE.PointLight(0x7eb8da, 0.6, 30);
+  var point1 = new THREE.PointLight(0xff1493, 0.5, 30);
   point1.position.set(4, 4, 6);
   scene.add(point1);
-  var point2 = new THREE.PointLight(0x5c9ead, 0.4, 25);
+  var point2 = new THREE.PointLight(0xffb6c1, 0.4, 25);
   point2.position.set(-5, -2, 5);
   scene.add(point2);
 
@@ -353,43 +322,98 @@
   var petalGroup = new THREE.Group();
   scene.add(petalGroup);
 
-  // Petal bomb / burst + halo (emotional release animation)
+  // Petal EXPLOSION burst effect - dramatic pop!
   var burstGroup = new THREE.Group();
   scene.add(burstGroup);
-  var BURST_DURATION = 1.0;
-  var HALO_DURATION = 0.9;
+  var BURST_DURATION = 1.2;
+  var HALO_DURATION = 0.8;
+  
   function createBurstAt(point) {
-    var ringGeom = new THREE.RingGeometry(0.15, 0.35, 32);
+    // Expanding shockwave ring
+    var ringGeom = new THREE.RingGeometry(0.1, 0.4, 48);
     var haloMat = new THREE.MeshBasicMaterial({
-      color: 0xffe4e6,
+      color: 0xff69b4,
       transparent: true,
-      opacity: 0.9,
+      opacity: 1,
       side: THREE.DoubleSide
     });
     var halo = new THREE.Mesh(ringGeom, haloMat);
     halo.position.copy(point);
-    halo.rotation.x = -Math.PI / 2;
     halo.userData = { isHalo: true, life: 1 };
     burstGroup.add(halo);
-    var particleGeom = new THREE.PlaneGeometry(0.25, 0.5);
-    var colors = [0xf8d7da, 0xffe4e6, 0xffd1dc, 0xe8e0f0];
-    for (var i = 0; i < 14; i++) {
-      var angle = (i / 14) * Math.PI * 2 + Math.random() * 0.5;
-      var speed = 1.8 + Math.random() * 1.2;
+    
+    // Second inner ring for layered effect
+    var ringGeom2 = new THREE.RingGeometry(0.05, 0.2, 32);
+    var haloMat2 = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.8,
+      side: THREE.DoubleSide
+    });
+    var halo2 = new THREE.Mesh(ringGeom2, haloMat2);
+    halo2.position.copy(point);
+    halo2.userData = { isHalo: true, life: 1, isInner: true };
+    burstGroup.add(halo2);
+    
+    // Petal fragment particles - more of them, varied sizes
+    var colors = [0xffb6c1, 0xff69b4, 0xffc0cb, 0xff1493, 0xffe4e9, 0xffffff];
+    
+    // Large petal fragments - exploding outward
+    for (var i = 0; i < 12; i++) {
+      var angle = (i / 12) * Math.PI * 2 + Math.random() * 0.3;
+      var speed = 3.5 + Math.random() * 2.5;
       var vx = Math.cos(angle) * speed;
-      var vz = Math.sin(angle) * speed;
-      var vy = (Math.random() - 0.3) * 1.5;
+      var vz = Math.sin(angle) * speed * 0.5;
+      var vy = (Math.random() - 0.2) * 3;
+      var particleGeom = new THREE.PlaneGeometry(0.3 + Math.random() * 0.2, 0.5 + Math.random() * 0.3);
       var mat = new THREE.MeshBasicMaterial({
         color: colors[i % colors.length],
         transparent: true,
-        opacity: 0.95,
+        opacity: 1,
         side: THREE.DoubleSide
       });
-      var mesh = new THREE.Mesh(particleGeom.clone(), mat);
+      var mesh = new THREE.Mesh(particleGeom, mat);
       mesh.position.copy(point);
-      mesh.userData = { vx: vx, vy: vy, vz: vz, life: 1 };
+      mesh.rotation.z = Math.random() * Math.PI * 2;
+      mesh.userData = { vx: vx, vy: vy, vz: vz, life: 1, spin: (Math.random() - 0.5) * 0.4, gravity: 0.08 };
       burstGroup.add(mesh);
     }
+    
+    // Small sparkle particles
+    for (var j = 0; j < 20; j++) {
+      var angle2 = Math.random() * Math.PI * 2;
+      var speed2 = 2 + Math.random() * 4;
+      var sparkGeom = new THREE.PlaneGeometry(0.1, 0.1);
+      var sparkMat = new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        transparent: true,
+        opacity: 1,
+        side: THREE.DoubleSide
+      });
+      var spark = new THREE.Mesh(sparkGeom, sparkMat);
+      spark.position.copy(point);
+      spark.userData = { 
+        vx: Math.cos(angle2) * speed2, 
+        vy: (Math.random() - 0.3) * speed2, 
+        vz: Math.sin(angle2) * speed2 * 0.5, 
+        life: 1,
+        isSpark: true
+      };
+      burstGroup.add(spark);
+    }
+    
+    // Glowing center flash
+    var flashGeom = new THREE.CircleGeometry(0.8, 32);
+    var flashMat = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.9,
+      side: THREE.DoubleSide
+    });
+    var flash = new THREE.Mesh(flashGeom, flashMat);
+    flash.position.copy(point);
+    flash.userData = { isFlash: true, life: 1 };
+    burstGroup.add(flash);
   }
 
   var raycaster = new THREE.Raycaster();
@@ -415,65 +439,164 @@
   }
   buildAffirmationQueue();
 
-  var PETAL_COLORS = [
-    '#f8d7da', '#ffe4e6', '#e8d5e2', '#d4e4f7', '#faf0e6', '#ffd1dc', '#e6e6fa', '#ffeef2', '#e8e0f0'
+  // Enhanced 3D Petal Colors with gradient info
+  var PETAL_COLOR_SETS = [
+    { base: '#ffb6c1', highlight: '#ffe4e9', shadow: '#ff8da1', rim: '#ffffff' }, // Light pink
+    { base: '#ff69b4', highlight: '#ff9ecf', shadow: '#e84593', rim: '#ffd1e8' }, // Hot pink
+    { base: '#ffc0cb', highlight: '#ffe4ec', shadow: '#ff9bb3', rim: '#ffffff' }, // Pink
+    { base: '#dda0dd', highlight: '#f0d0f0', shadow: '#ba55d3', rim: '#f8e8f8' }, // Plum
+    { base: '#e8b4c8', highlight: '#f8dce8', shadow: '#d48ba8', rim: '#fff0f5' }, // Rose
+    { base: '#f0b8d0', highlight: '#fce4ec', shadow: '#e080a0', rim: '#ffffff' }, // Blush
+    { base: '#e6a8d7', highlight: '#f8d0ef', shadow: '#c060a0', rim: '#fce4f8' }, // Orchid
+    { base: '#ffcce5', highlight: '#ffe8f2', shadow: '#ff99cc', rim: '#ffffff' }, // Candy pink
+    { base: '#d4a5c9', highlight: '#f0d8eb', shadow: '#b070a0', rim: '#f8e8f4' }  // Mauve
   ];
+  
   var petalGeometry = new THREE.PlaneGeometry(1, 1);
-  function makePetalTexture(color) {
-    var size = 128;
+  
+  // Create 3D-looking petal texture with gradients, highlights, and shadows
+  function makePetalTexture3D(colorSet) {
+    var size = 256; // Higher resolution for better quality
     var canvas = document.createElement('canvas');
     canvas.width = size;
     canvas.height = size;
     var ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, size, size);
+    
     ctx.save();
     ctx.translate(size / 2, size / 2);
-    ctx.scale(0.5, 1);
-    ctx.beginPath();
-    ctx.moveTo(0, -50);
-    ctx.bezierCurveTo(35, -30, 35, 30, 0, 50);
-    ctx.bezierCurveTo(-35, 30, -35, -30, 0, -50);
-    ctx.closePath();
-    ctx.fillStyle = color;
-    ctx.globalAlpha = 0.95;
+    
+    // Draw petal shape path
+    function drawPetalPath() {
+      ctx.beginPath();
+      // More realistic petal shape with curves
+      ctx.moveTo(0, -55);
+      ctx.bezierCurveTo(45, -40, 50, 0, 45, 35);
+      ctx.bezierCurveTo(35, 50, 10, 58, 0, 58);
+      ctx.bezierCurveTo(-10, 58, -35, 50, -45, 35);
+      ctx.bezierCurveTo(-50, 0, -45, -40, 0, -55);
+      ctx.closePath();
+    }
+    
+    // Layer 1: Base shadow (gives depth)
+    ctx.save();
+    ctx.translate(3, 4);
+    drawPetalPath();
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
     ctx.fill();
     ctx.restore();
+    
+    // Layer 2: Main petal gradient (3D effect)
+    drawPetalPath();
+    var mainGrad = ctx.createRadialGradient(-15, -20, 0, 0, 10, 80);
+    mainGrad.addColorStop(0, colorSet.highlight);
+    mainGrad.addColorStop(0.3, colorSet.base);
+    mainGrad.addColorStop(0.7, colorSet.base);
+    mainGrad.addColorStop(1, colorSet.shadow);
+    ctx.fillStyle = mainGrad;
+    ctx.fill();
+    
+    // Layer 3: Highlight on top (light reflection)
+    ctx.save();
+    ctx.clip();
+    var highlightGrad = ctx.createRadialGradient(-20, -30, 5, -15, -25, 40);
+    highlightGrad.addColorStop(0, 'rgba(255, 255, 255, 0.7)');
+    highlightGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.2)');
+    highlightGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+    ctx.fillStyle = highlightGrad;
+    ctx.fillRect(-60, -60, 120, 120);
+    ctx.restore();
+    
+    // Layer 4: Center vein (realistic detail)
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(0, -45);
+    ctx.quadraticCurveTo(2, 0, 0, 50);
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    // Side veins
+    for (var i = 0; i < 4; i++) {
+      var y = -30 + i * 20;
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.quadraticCurveTo(15, y + 8, 25, y + 5);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.quadraticCurveTo(-15, y + 8, -25, y + 5);
+      ctx.stroke();
+    }
+    ctx.restore();
+    
+    // Layer 5: Rim light (edge glow)
+    drawPetalPath();
+    ctx.strokeStyle = colorSet.rim;
+    ctx.lineWidth = 1.5;
+    ctx.globalAlpha = 0.4;
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+    
+    // Layer 6: Inner glow
+    drawPetalPath();
+    ctx.save();
+    ctx.clip();
+    var innerGlow = ctx.createRadialGradient(0, 0, 0, 0, 0, 60);
+    innerGlow.addColorStop(0, 'rgba(255, 255, 255, 0.15)');
+    innerGlow.addColorStop(0.5, 'rgba(255, 200, 220, 0.05)');
+    innerGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    ctx.fillStyle = innerGlow;
+    ctx.fill();
+    ctx.restore();
+    
+    ctx.restore();
+    
     var tex = new THREE.CanvasTexture(canvas);
     tex.needsUpdate = true;
     return tex;
   }
+  
   var petalTextures = {};
-  function getPetalTexture(color) {
-    if (!petalTextures[color]) petalTextures[color] = makePetalTexture(color);
-    return petalTextures[color];
+  function getPetalTexture(colorSetIndex) {
+    if (!petalTextures[colorSetIndex]) {
+      petalTextures[colorSetIndex] = makePetalTexture3D(PETAL_COLOR_SETS[colorSetIndex]);
+    }
+    return petalTextures[colorSetIndex];
   }
+  
   function createPetal() {
     var geometry = petalGeometry.clone();
-    var color = PETAL_COLORS[Math.floor(Math.random() * PETAL_COLORS.length)];
-    var texture = getPetalTexture(color);
+    var colorIndex = Math.floor(Math.random() * PETAL_COLOR_SETS.length);
+    var texture = getPetalTexture(colorIndex);
     var material = new THREE.MeshBasicMaterial({
       map: texture,
       side: THREE.DoubleSide,
       transparent: true,
-      alphaTest: 0.15,
+      alphaTest: 0.08,
       depthWrite: true
     });
     var mesh = new THREE.Mesh(geometry, material);
-    var scale = 1.8 + Math.random() * 1.2;
-    mesh.scale.set(scale, scale, 1);
+    var scale = 1.6 + Math.random() * 1.0;
+    mesh.scale.set(scale, scale * 1.2, 1); // Slightly elongated for realism
     mesh.userData.baseScale = scale;
+    mesh.userData.baseScaleY = scale * 1.2;
     mesh.position.set(
-      (Math.random() - 0.5) * 22,
-      (Math.random() - 0.5) * 18 + 2,
-      (Math.random() - 0.5) * 10 - 3
+      (Math.random() - 0.5) * 20,
+      (Math.random() - 0.5) * 16 + 3,
+      (Math.random() - 0.5) * 8 - 2
     );
+    // More natural 3D rotation
     mesh.rotation.z = Math.random() * Math.PI * 2;
-    mesh.rotation.y = (Math.random() - 0.5) * Math.PI * 0.6;
-    mesh.rotation.x = (Math.random() - 0.5) * 0.3;
-    mesh.userData.speed = 0.022 + Math.random() * 0.012;
+    mesh.rotation.y = (Math.random() - 0.5) * Math.PI * 0.8;
+    mesh.rotation.x = (Math.random() - 0.5) * 0.5;
+    mesh.userData.speed = 0.018 + Math.random() * 0.014;
     mesh.userData.phase = Math.random() * Math.PI * 2;
-    mesh.userData.sway = 0.025 + Math.random() * 0.015;
-    mesh.userData.spin = (Math.random() - 0.5) * 0.03;
+    mesh.userData.sway = 0.02 + Math.random() * 0.018;
+    mesh.userData.spin = (Math.random() - 0.5) * 0.025;
+    mesh.userData.wobble = Math.random() * Math.PI * 2; // For 3D wobble effect
+    mesh.userData.wobbleSpeed = 0.5 + Math.random() * 0.5;
     mesh.userData.fading = false;
     mesh.userData.scale = 1;
     mesh.userData.opacity = 1;
@@ -488,7 +611,7 @@
   var lastTapTime = 0;
   var TAP_COOLDOWN_MS = 350;
   function onPointerDown(event) {
-    if (!overlayDismissed) dismissStartOverlay();
+    if (transitionTriggered) return; // Prevent interaction during transition
     if (event && event.clientX != null) {
       mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
       mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -503,6 +626,10 @@
     obj.userData.fading = true;
     playChime();
     createBurstAt(intersects[0].point.clone());
+    
+    // Increment pop counter
+    incrementPopCount();
+    
     var msgIndex = obj.userData.affirmationIndex;
     if (typeof msgIndex === 'number' && AFFIRMATIONS[msgIndex]) {
       showAffirmation(AFFIRMATIONS[msgIndex]);
@@ -562,8 +689,9 @@
       if (u.fading) {
         u.opacity -= dt * 2.2;
         u.scale *= 0.88;
-        var s = mesh.userData.baseScale !== undefined ? mesh.userData.baseScale : 1;
-        mesh.scale.setScalar(s * u.scale);
+        var s = u.baseScale !== undefined ? u.baseScale : 1;
+        var sy = u.baseScaleY !== undefined ? u.baseScaleY : s;
+        mesh.scale.set(s * u.scale, sy * u.scale, 1);
         mesh.material.opacity = u.opacity;
         if (mesh.material.transparent === false) {
           mesh.material.transparent = true;
@@ -573,18 +701,27 @@
           petalGroup.remove(mesh);
           mesh.geometry.dispose();
           mesh.material.dispose();
-          createPetal();
+          // Don't respawn - petal is permanently removed
         }
         continue;
       }
 
+      // 3D movement with wobble for realistic floating
       mesh.position.y -= u.speed;
       mesh.position.x += Math.sin(t + u.phase) * u.sway;
       mesh.rotation.z += u.spin;
+      
+      // Add 3D wobble effect (makes petals look more natural/floating)
+      if (u.wobble !== undefined) {
+        var wobbleT = t * u.wobbleSpeed;
+        mesh.rotation.x = Math.sin(wobbleT + u.wobble) * 0.3;
+        mesh.rotation.y = Math.cos(wobbleT * 0.7 + u.wobble) * 0.4;
+      }
+      
       if (mesh.position.y < -10) {
         mesh.position.y = 8 + Math.random() * 4;
-        mesh.position.x = (Math.random() - 0.5) * 24;
-        mesh.position.z = (Math.random() - 0.5) * 12 - 4;
+        mesh.position.x = (Math.random() - 0.5) * 22;
+        mesh.position.z = (Math.random() - 0.5) * 10 - 3;
       }
     }
 
@@ -592,23 +729,52 @@
       var burstChild = burstGroup.children[b];
       var u = burstChild.userData;
       if (!u) continue;
-      var dtB = clock.getDelta();
+      
       if (u.isHalo) {
-        u.life -= dtB / HALO_DURATION;
-        burstChild.scale.setScalar(1 + (1 - u.life) * 4);
-        burstChild.material.opacity = u.life * 0.85;
+        u.life -= dt / HALO_DURATION;
+        var expandScale = u.isInner ? (1 + (1 - u.life) * 6) : (1 + (1 - u.life) * 8);
+        burstChild.scale.setScalar(expandScale);
+        burstChild.material.opacity = u.life * 0.9;
+        if (u.life <= 0) {
+          burstGroup.remove(burstChild);
+          burstChild.geometry.dispose();
+          burstChild.material.dispose();
+        }
+      } else if (u.isFlash) {
+        u.life -= dt / 0.15; // Very fast flash
+        burstChild.scale.setScalar(1 + (1 - u.life) * 2);
+        burstChild.material.opacity = u.life;
+        if (u.life <= 0) {
+          burstGroup.remove(burstChild);
+          burstChild.geometry.dispose();
+          burstChild.material.dispose();
+        }
+      } else if (u.isSpark) {
+        burstChild.position.x += u.vx * dt;
+        burstChild.position.y += u.vy * dt;
+        burstChild.position.z += u.vz * dt;
+        u.life -= dt / 0.6; // Sparks fade faster
+        burstChild.material.opacity = u.life;
+        burstChild.scale.setScalar(u.life);
         if (u.life <= 0) {
           burstGroup.remove(burstChild);
           burstChild.geometry.dispose();
           burstChild.material.dispose();
         }
       } else {
-        burstChild.position.x += u.vx * dtB;
-        burstChild.position.y += u.vy * dtB;
-        burstChild.position.z += u.vz * dtB;
-        u.life -= dtB / BURST_DURATION;
-        burstChild.material.opacity = u.life;
-        burstChild.rotation.z += 0.1;
+        // Petal fragments with gravity
+        burstChild.position.x += u.vx * dt;
+        burstChild.position.y += u.vy * dt;
+        burstChild.position.z += u.vz * dt;
+        if (u.gravity) {
+          u.vy -= u.gravity; // Apply gravity
+        }
+        if (u.spin) {
+          burstChild.rotation.z += u.spin;
+        }
+        u.life -= dt / BURST_DURATION;
+        burstChild.material.opacity = Math.max(0, u.life);
+        burstChild.scale.multiplyScalar(0.98); // Shrink as they fly
         if (u.life <= 0) {
           burstGroup.remove(burstChild);
           burstChild.geometry.dispose();
@@ -659,7 +825,18 @@
     }
     buildQueue();
 
-    var PETAL_COLORS_2D = ['#f8d7da', '#ffe4e6', '#e8d5e2', '#d4e4f7', '#faf0e6', '#ffd1dc', '#e6e6fa', '#ffeef2', '#e8e0f0'];
+    // Enhanced 2D Petal Colors with gradient info
+    var PETAL_COLOR_SETS_2D = [
+      { base: '#ffb6c1', highlight: '#ffe4e9', shadow: '#ff8da1' },
+      { base: '#ff69b4', highlight: '#ff9ecf', shadow: '#e84593' },
+      { base: '#ffc0cb', highlight: '#ffe4ec', shadow: '#ff9bb3' },
+      { base: '#dda0dd', highlight: '#f0d0f0', shadow: '#ba55d3' },
+      { base: '#e8b4c8', highlight: '#f8dce8', shadow: '#d48ba8' },
+      { base: '#f0b8d0', highlight: '#fce4ec', shadow: '#e080a0' },
+      { base: '#e6a8d7', highlight: '#f8d0ef', shadow: '#c060a0' },
+      { base: '#ffcce5', highlight: '#ffe8f2', shadow: '#ff99cc' },
+      { base: '#d4a5c9', highlight: '#f0d8eb', shadow: '#b070a0' }
+    ];
     var petals = [];
     var petalCount = 80;
     var lastTapTime = 0;
@@ -669,7 +846,8 @@
     var HALO_DURATION_2D = 0.9;
 
     function createPetalData() {
-      var baseScale = 18 + Math.random() * 14;
+      var baseScale = 20 + Math.random() * 16;
+      var colorSet = PETAL_COLOR_SETS_2D[Math.floor(Math.random() * PETAL_COLOR_SETS_2D.length)];
       return {
         x: Math.random() * w,
         y: Math.random() * h,
@@ -677,8 +855,10 @@
         speed: 0.5 + Math.random() * 0.35,
         phase: Math.random() * Math.PI * 2,
         sway: 0.8 + Math.random() * 0.5,
-        spin: (Math.random() - 0.5) * 0.05,
-        color: PETAL_COLORS_2D[Math.floor(Math.random() * PETAL_COLORS_2D.length)],
+        spin: (Math.random() - 0.5) * 0.04,
+        wobble: Math.random() * Math.PI * 2,
+        wobbleSpeed: 0.8 + Math.random() * 0.6,
+        colorSet: colorSet,
         affirmationIndex: nextIdx(),
         fading: false,
         opacity: 1,
@@ -688,42 +868,128 @@
     }
     for (var i = 0; i < petalCount; i++) petals.push(createPetalData());
 
-    function drawPetal(p) {
+    // Draw 3D-looking petal with gradients
+    function drawPetal(p, time) {
       var scale = (p.baseScale * p.scale) / 50;
+      var wobbleX = Math.sin(time * p.wobbleSpeed + p.wobble) * 0.15;
+      var wobbleY = Math.cos(time * p.wobbleSpeed * 0.7 + p.wobble) * 0.1;
+      
       ctx.save();
       ctx.translate(p.x, p.y);
       ctx.rotate(p.rotation);
-      ctx.scale(scale, scale);
+      ctx.scale(scale * (1 + wobbleX), scale * 1.2 * (1 + wobbleY));
       ctx.globalAlpha = p.opacity;
-      ctx.fillStyle = p.color;
+      
+      // Shadow layer
+      ctx.save();
+      ctx.translate(2, 3);
       ctx.beginPath();
-      ctx.moveTo(0, -50);
-      ctx.bezierCurveTo(35, -30, 35, 30, 0, 50);
-      ctx.bezierCurveTo(-35, 30, -35, -30, 0, -50);
+      ctx.moveTo(0, -55);
+      ctx.bezierCurveTo(45, -40, 50, 0, 45, 35);
+      ctx.bezierCurveTo(35, 50, 10, 58, 0, 58);
+      ctx.bezierCurveTo(-10, 58, -35, 50, -45, 35);
+      ctx.bezierCurveTo(-50, 0, -45, -40, 0, -55);
       ctx.closePath();
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.12)';
       ctx.fill();
+      ctx.restore();
+      
+      // Main petal with gradient
+      ctx.beginPath();
+      ctx.moveTo(0, -55);
+      ctx.bezierCurveTo(45, -40, 50, 0, 45, 35);
+      ctx.bezierCurveTo(35, 50, 10, 58, 0, 58);
+      ctx.bezierCurveTo(-10, 58, -35, 50, -45, 35);
+      ctx.bezierCurveTo(-50, 0, -45, -40, 0, -55);
+      ctx.closePath();
+      
+      var grad = ctx.createRadialGradient(-15, -20, 0, 0, 10, 70);
+      grad.addColorStop(0, p.colorSet.highlight);
+      grad.addColorStop(0.4, p.colorSet.base);
+      grad.addColorStop(1, p.colorSet.shadow);
+      ctx.fillStyle = grad;
+      ctx.fill();
+      
+      // Highlight
+      ctx.save();
+      ctx.clip();
+      var hlGrad = ctx.createRadialGradient(-18, -28, 3, -12, -22, 35);
+      hlGrad.addColorStop(0, 'rgba(255, 255, 255, 0.6)');
+      hlGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.15)');
+      hlGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+      ctx.fillStyle = hlGrad;
+      ctx.fillRect(-60, -60, 120, 120);
+      ctx.restore();
+      
+      // Center vein
+      ctx.beginPath();
+      ctx.moveTo(0, -45);
+      ctx.quadraticCurveTo(1.5, 0, 0, 50);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      
+      // Rim light
+      ctx.beginPath();
+      ctx.moveTo(0, -55);
+      ctx.bezierCurveTo(45, -40, 50, 0, 45, 35);
+      ctx.bezierCurveTo(35, 50, 10, 58, 0, 58);
+      ctx.bezierCurveTo(-10, 58, -35, 50, -45, 35);
+      ctx.bezierCurveTo(-50, 0, -45, -40, 0, -55);
+      ctx.closePath();
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      
       ctx.restore();
     }
 
     function createBurst2D(cx, cy) {
       var particles = [];
-      var colors = ['#f8d7da', '#ffe4e6', '#ffd1dc', '#e8e0f0'];
+      var colors = ['#ffb6c1', '#ff69b4', '#ffc0cb', '#ff1493', '#ffe4e9', '#ffffff'];
+      
+      // Large petal fragments
       for (var i = 0; i < 14; i++) {
-        var angle = (i / 14) * Math.PI * 2 + Math.random() * 0.5;
-        var speed = 45 + Math.random() * 25;
+        var angle = (i / 14) * Math.PI * 2 + Math.random() * 0.3;
+        var speed = 120 + Math.random() * 80;
         particles.push({
           x: 0, y: 0,
           vx: Math.cos(angle) * speed,
-          vy: Math.sin(angle) * speed - 4,
+          vy: Math.sin(angle) * speed,
           color: colors[i % colors.length],
-          life: 1
+          size: 8 + Math.random() * 6,
+          life: 1,
+          spin: (Math.random() - 0.5) * 0.3,
+          rotation: Math.random() * Math.PI * 2,
+          gravity: 150
         });
       }
+      
+      // Small sparkles
+      for (var j = 0; j < 25; j++) {
+        var angle2 = Math.random() * Math.PI * 2;
+        var speed2 = 80 + Math.random() * 150;
+        particles.push({
+          x: 0, y: 0,
+          vx: Math.cos(angle2) * speed2,
+          vy: Math.sin(angle2) * speed2,
+          color: '#ffffff',
+          size: 2 + Math.random() * 3,
+          life: 1,
+          isSpark: true,
+          fadeSpeed: 2.5
+        });
+      }
+      
       bursts.push({
         x: cx, y: cy,
         particles: particles,
         haloRadius: 0,
         haloAlpha: 1,
+        halo2Radius: 0,
+        halo2Alpha: 0.8,
+        flashAlpha: 1,
+        flashRadius: 30,
         startTime: Date.now()
       });
     }
@@ -746,7 +1012,7 @@
     }
 
     function onPointerDown(ev) {
-      if (!overlayDismissed) dismissStartOverlay();
+      if (transitionTriggered) return; // Prevent interaction during transition
       var clientX = ev.clientX != null ? ev.clientX : (ev.touches && ev.touches[0] && ev.touches[0].clientX);
       var clientY = ev.clientY != null ? ev.clientY : (ev.touches && ev.touches[0] && ev.touches[0].clientY);
       if (clientX == null || clientY == null) return;
@@ -762,6 +1028,10 @@
       p.fading = true;
       playChime();
       createBurst2D(p.x, p.y);
+      
+      // Increment pop counter
+      incrementPopCount();
+      
       if (typeof p.affirmationIndex === 'number' && AFFIRMATIONS[p.affirmationIndex]) showAffirmation(AFFIRMATIONS[p.affirmationIndex]);
     }
 
@@ -792,31 +1062,85 @@
         var burst = bursts[b];
         var burstAge = (Date.now() - burst.startTime) / 1000;
         var haloLife = Math.max(0, 1 - burstAge / HALO_DURATION_2D);
-        burst.haloRadius = burstAge * 90;
+        
+        // Center flash
+        if (burst.flashAlpha > 0) {
+          burst.flashAlpha -= dt * 8;
+          burst.flashRadius += dt * 200;
+          ctx.save();
+          ctx.globalAlpha = Math.max(0, burst.flashAlpha);
+          var flashGrad = ctx.createRadialGradient(burst.x, burst.y, 0, burst.x, burst.y, burst.flashRadius);
+          flashGrad.addColorStop(0, '#ffffff');
+          flashGrad.addColorStop(0.5, '#ff69b4');
+          flashGrad.addColorStop(1, 'transparent');
+          ctx.fillStyle = flashGrad;
+          ctx.beginPath();
+          ctx.arc(burst.x, burst.y, burst.flashRadius, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+        
+        // Outer shockwave ring
+        burst.haloRadius = burstAge * 180;
         burst.haloAlpha = haloLife * 0.9;
         ctx.save();
-        ctx.strokeStyle = 'rgba(255, 228, 230, ' + burst.haloAlpha + ')';
+        ctx.strokeStyle = 'rgba(255, 105, 180, ' + burst.haloAlpha + ')';
         ctx.lineWidth = 4;
         ctx.beginPath();
         ctx.arc(burst.x, burst.y, burst.haloRadius, 0, Math.PI * 2);
         ctx.stroke();
         ctx.restore();
-        for (var j = 0; j < burst.particles.length; j++) {
+        
+        // Inner ring
+        ctx.save();
+        ctx.strokeStyle = 'rgba(255, 255, 255, ' + (burst.haloAlpha * 0.7) + ')';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(burst.x, burst.y, burst.haloRadius * 0.6, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+        
+        // Particles
+        for (var j = burst.particles.length - 1; j >= 0; j--) {
           var pt = burst.particles[j];
           pt.x += pt.vx * dt;
           pt.y += pt.vy * dt;
-          pt.life -= dt / BURST_DURATION_2D;
+          
+          // Apply gravity to fragments
+          if (pt.gravity) {
+            pt.vy += pt.gravity * dt;
+          }
+          
+          // Fade speed
+          var fadeSpeed = pt.fadeSpeed || 1;
+          pt.life -= dt * fadeSpeed / BURST_DURATION_2D;
+          
           if (pt.life <= 0) continue;
+          
           ctx.save();
-          ctx.globalAlpha = pt.life;
+          ctx.globalAlpha = Math.max(0, pt.life);
           ctx.fillStyle = pt.color;
           ctx.translate(burst.x + pt.x, burst.y + pt.y);
-          ctx.beginPath();
-          ctx.ellipse(0, 0, 6, 12, 0, 0, Math.PI * 2);
-          ctx.fill();
+          
+          if (pt.isSpark) {
+            // Sparkles - small circles
+            ctx.beginPath();
+            ctx.arc(0, 0, pt.size * pt.life, 0, Math.PI * 2);
+            ctx.fill();
+          } else {
+            // Petal fragments - rotating ellipses
+            if (pt.spin) {
+              pt.rotation += pt.spin;
+            }
+            ctx.rotate(pt.rotation || 0);
+            ctx.beginPath();
+            ctx.ellipse(0, 0, pt.size * 0.6, pt.size, 0, 0, Math.PI * 2);
+            ctx.fill();
+          }
           ctx.restore();
         }
-        if (haloLife <= 0) bursts.splice(b, 1);
+        
+        if (haloLife <= 0 && burst.flashAlpha <= 0) bursts.splice(b, 1);
       }
 
       for (var i = petals.length - 1; i >= 0; i--) {
@@ -826,9 +1150,10 @@
           p.scale *= 0.88;
           if (p.opacity <= 0) {
             petals.splice(i, 1);
-            petals.push(createPetalData());
+            // Don't respawn - petal is permanently removed
+          } else {
+            drawPetal(p, t);
           }
-          drawPetal(p);
           continue;
         }
         p.y += p.speed;
@@ -838,7 +1163,7 @@
         if (p.y < -50) { p.y = h + 50; p.x = Math.random() * w; }
         if (p.x < -50) p.x = w + 50;
         if (p.x > w + 50) p.x = -50;
-        drawPetal(p);
+        drawPetal(p, t);
       }
     }
     animate2D();
