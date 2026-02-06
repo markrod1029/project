@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday 💖</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #000000, #2d0b3d, #6a0dad, #8a2be2);
+      overflow: hidden;
+      font-family: 'Poppins', sans-serif;
+      color: #fff;
+      text-align: center;
+      flex-direction: column;
+    }
+
+    /* Countdown Container */
+    .countdown-container {
+      position: absolute;
+      top: 20px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    .countdown-title {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: #ffb6c1;
+      text-shadow: 0 0 10px rgba(255, 182, 193, 0.7);
+    }
+
+    .countdown-box {
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(15px);
+      padding: 15px 25px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      animation: fadeIn 2s ease-in-out;
+    }
+
+    .countdown-display {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .countdown-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .countdown-number {
+      background: rgba(138, 43, 226, 0.3);
+      border: 2px solid #8a2be2;
+      border-radius: 10px;
+      width: 60px;
+      height: 70px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2.5rem;
+      font-weight: 600;
+      color: #ffb6c1;
+      text-shadow: 0 0 10px rgba(255, 182, 193, 0.7);
+      box-shadow: 0 0 15px rgba(138, 43, 226, 0.5);
+      margin-bottom: 5px;
+      transition: all 0.3s ease;
+    }
+
+    .countdown-label {
+      font-size: 0.8rem;
+      color: #d8bfd8;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .colon {
+      font-size: 2.5rem;
+      color: #ffb6c1;
+      margin: 0 5px;
+      align-self: center;
+      text-shadow: 0 0 10px rgba(255, 182, 193, 0.7);
+    }
+
+    /* Main Card Styles */
+    .card {
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(15px);
+      padding: 50px;
+      border-radius: 25px;
+      box-shadow: 0 0 40px rgba(138, 43, 226, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      max-width: 800px;
+      margin: 100px 20px 20px;
+      animation: fadeIn 2s ease-in-out;
+      position: relative;
+      z-index: 10;
+    }
+
+    h1 {
+      font-size: 3.5rem;
+      margin-bottom: 20px;
+      animation: glow 2s ease-in-out infinite alternate;
+      color: #ffb6c1;
+    }
+
+    .message {
+      font-size: 1.4rem;
+      line-height: 1.8;
+      margin-top: 20px;
+      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 10px #ff69b4, 0 0 20px #ff1493; }
+      to { text-shadow: 0 0 20px #ff1493, 0 0 40px #8a2be2; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    /* Floating Elements Container */
+    .floating-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    /* Floating Hearts */
+    .hearts span {
+      position: absolute;
+      display: block;
+      width: 25px;
+      height: 25px;
+      background: linear-gradient(45deg, #ff69b4, #9370db);
+      clip-path: polygon(50% 0%, 61% 21%, 82% 21%, 69% 35%, 75% 57%, 50% 45%, 25% 57%, 31% 35%, 18% 21%, 39% 21%);
+      animation: float 15s linear infinite;
+      bottom: -20px;
+      opacity: 0.7;
+    }
+
+    /* Floating Flowers and Boxes */
+    .floating-element {
+      position: absolute;
+      display: block;
+      font-size: 24px;
+      animation: floatRandom 20s linear infinite;
+      opacity: 0;
+      filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+    }
+
+    /* Different colors for different elements */
+    .flower-1 { color: #ff69b4; }
+    .flower-2 { color: #9370db; }
+    .flower-3 { color: #ff1493; }
+    .flower-4 { color: #da70d6; }
+    .gift-box { color: #8a2be2; }
+    .star { color: #ffd700; }
+    .confetti { color: #00ff00; }
+    .balloon { color: #ff6b6b; }
+
+    @keyframes float {
+      0% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
+      100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+    }
+
+    @keyframes floatRandom {
+      0% { 
+        transform: translateY(100vh) translateX(0) rotate(0deg); 
+        opacity: 0; 
+      }
+      10% { 
+        opacity: 0.8; 
+      }
+      90% { 
+        opacity: 0.8; 
+      }
+      100% { 
+        transform: translateY(-100px) translateX(calc(100px * var(--x-multiplier))) rotate(calc(360deg * var(--rotation))); 
+        opacity: 0; 
+      }
+    }
+
+    /* Celebration Effect */
+    .celebration-message {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 4rem;
+      font-weight: bold;
+      color: #ff69b4;
+      text-shadow: 0 0 30px #ff1493, 0 0 60px #8a2be2;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      animation: celebrationText 3s ease-in-out;
+    }
+
+    @keyframes celebrationText {
+      0% { 
+        opacity: 0; 
+        transform: translate(-50%, -50%) scale(0.5); 
+      }
+      20% { 
+        opacity: 1; 
+        transform: translate(-50%, -50%) scale(1.2); 
+      }
+      40% { 
+        transform: translate(-50%, -50%) scale(1); 
+      }
+      80% { 
+        opacity: 1; 
+      }
+      100% { 
+        opacity: 0; 
+        transform: translate(-50%, -50%) scale(0.8); 
+      }
+    }
+
+    /* Birthday Date Styling */
+    .birthday-date {
+      margin-top: 5px;
+      font-size: 1.1rem;
+      color: #e6b0ff;
+      font-weight: 600;
+      text-shadow: 0 0 10px rgba(230, 176, 255, 0.7);
+    }
+
+    /* For mobile responsiveness */
+    @media (max-width: 768px) {
+      .countdown-number {
+        width: 45px;
+        height: 55px;
+        font-size: 2rem;
+      }
+      
+      .colon {
+        font-size: 2rem;
+      }
+      
+      .countdown-title {
+        font-size: 1rem;
+      }
+      
+      .card {
+        padding: 30px;
+        margin-top: 120px;
+      }
+      
+      h1 {
+        font-size: 2.5rem;
+      }
+      
+      .floating-element {
+        font-size: 18px;
+      }
+      
+      .celebration-message {
+        font-size: 2.5rem;
+      }
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="countdown-container">
+    <div class="countdown-box">
+      <div class="countdown-title">🎂 Countdown to Birthday 🎂</div>
+      <div class="countdown-display" id="countdown">
+        <div class="countdown-item">
+          <div class="countdown-number" id="days">00</div>
+          <div class="countdown-label">Days</div>
+        </div>
+        <div class="colon">:</div>
+        <div class="countdown-item">
+          <div class="countdown-number" id="hours">00</div>
+          <div class="countdown-label">Hours</div>
+        </div>
+        <div class="colon">:</div>
+        <div class="countdown-item">
+          <div class="countdown-number" id="minutes">00</div>
+          <div class="countdown-label">Mins</div>
+        </div>
+        <div class="colon">:</div>
+        <div class="countdown-item">
+          <div class="countdown-number" id="seconds">00</div>
+          <div class="countdown-label">Secs</div>
+        </div>
+      </div>
+      <div class="birthday-date" id="birthdayDate">February 1</div>
+    </div>
+  </div>
+
+  <!-- Floating Elements Container -->
+  <div class="floating-container" id="floatingContainer">
+    <div class="hearts">
+      <span style="left:10%;animation-delay:0s;"></span>
+      <span style="left:30%;animation-delay:2s;"></span>
+      <span style="left:50%;animation-delay:4s;"></span>
+      <span style="left:70%;animation-delay:6s;"></span>
+      <span style="left:90%;animation-delay:8s;"></span>
+    </div>
+  </div>
+  
+  <!-- Celebration Message -->
+  <div id="celebrationMessage" class="celebration-message"></div>
+  
+  <div class="card">
+    <h1>🎉 Happy Birthday 💖</h1>
+    <p>Wishing you all the smiles, love & magic in the world 💫<br>
+    You deserve the best day ever 🌸</p>
+  </div>
+
+  <script>
+    // Set the birthday date (Feb 1)
+    const birthdayMonth = 1; // Feb is month 0
+    const birthdayDay = 1;
+    
+    // Get current date
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    
+    // Calculate next birthday
+    let birthdayDate = new Date(currentYear, birthdayMonth, birthdayDay);
+    let nextBirthdayYear = currentYear;
+    
+    // Check if birthday has already passed this year
+    if (today > birthdayDate) {
+      // If birthday passed, set for next year
+      nextBirthdayYear = currentYear + 1;
+      birthdayDate = new Date(nextBirthdayYear, birthdayMonth, birthdayDay);
+    }
+    
+    // Display the birthday date
+    document.getElementById('birthdayDate').textContent = `February 1, ${nextBirthdayYear}`;
+    
+    // Check if today is the birthday
+    const isBirthdayToday = today.getMonth() === birthdayMonth && today.getDate() === birthdayDay;
+    
+    // Create floating elements function
+    function createFloatingElements() {
+      const container = document.getElementById('floatingContainer');
+      const elements = [
+        { icon: 'fas fa-gift', class: 'gift-box' },
+        { icon: 'fas fa-star', class: 'star' },
+        { icon: 'fas fa-birthday-cake', class: 'balloon' },
+        { icon: 'fas fa-heart', class: 'flower-1' },
+        { icon: 'fas fa-heart', class: 'flower-2' },
+        { icon: 'fas fa-heart', class: 'flower-3' },
+        { icon: 'fas fa-heart', class: 'flower-4' },
+        { icon: 'fas fa-circle', class: 'confetti' }
+      ];
+      
+      // Create 50 floating elements
+      for (let i = 0; i < 50; i++) {
+        const element = document.createElement('div');
+        const randomElement = elements[Math.floor(Math.random() * elements.length)];
+        
+        element.className = `floating-element ${randomElement.class}`;
+        element.innerHTML = `<i class="${randomElement.icon}"></i>`;
+        
+        // Random properties for animation
+        const startX = Math.random() * 100; // 0% to 100%
+        const xMultiplier = (Math.random() * 2 - 1); // -1 to 1
+        const rotation = Math.random();
+        const delay = Math.random() * 5; // 0 to 5 seconds delay
+        const duration = 15 + Math.random() * 15; // 15 to 30 seconds duration
+        const size = 20 + Math.random() * 30; // 20px to 50px
+        
+        element.style.left = `${startX}%`;
+        element.style.fontSize = `${size}px`;
+        element.style.setProperty('--x-multiplier', xMultiplier);
+        element.style.setProperty('--rotation', rotation);
+        element.style.animationDelay = `${delay}s`;
+        element.style.animationDuration = `${duration}s`;
+        
+        container.appendChild(element);
+      }
+    }
+    
+    // Show celebration message
+    function showCelebrationMessage() {
+      const messages = [
+        "🎉 Happy Birthday! 🎂",
+        "🎊 It's Your Day! 🎁",
+        "🌸 Wishing You Joy! 💖",
+        "✨ Celebrate You! 🎈",
+        "🥳 Party Time! 🎉"
+      ];
+      
+      const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+      const celebrationDiv = document.getElementById('celebrationMessage');
+      celebrationDiv.textContent = randomMessage;
+      
+      // Show and hide message
+      celebrationDiv.style.display = 'block';
+      setTimeout(() => {
+        celebrationDiv.style.display = 'none';
+      }, 3000);
+      
+      // Show new message every 3 seconds
+      if (isBirthdayToday) {
+        setInterval(() => {
+          const newMessage = messages[Math.floor(Math.random() * messages.length)];
+          celebrationDiv.textContent = newMessage;
+          celebrationDiv.style.display = 'block';
+          setTimeout(() => {
+            celebrationDiv.style.display = 'none';
+          }, 3000);
+        }, 4000);
+      }
+    }
+    
+    // Update countdown function
+    function updateCountdown() {
+      const now = new Date();
+      const timeDiff = birthdayDate.getTime() - now.getTime();
+      
+      // If birthday has arrived
+      if (timeDiff <= 0 && !isBirthdayToday) {
+        // Reset countdown for next year
+        nextBirthdayYear += 1;
+        birthdayDate = new Date(nextBirthdayYear, birthdayMonth, birthdayDay);
+        document.getElementById('birthdayDate').textContent = `February 1, ${nextBirthdayYear}`;
+        
+        // If it's February 1 today, start celebration
+        const today = new Date();
+        if (today.getMonth() === birthdayMonth && today.getDate() === birthdayDay) {
+          document.querySelector('.countdown-title').textContent = '🎉 Happy Birthday! 🎉';
+          document.querySelector('.countdown-title').style.color = '#ff69b4';
+          document.querySelector('.countdown-title').style.fontSize = '1.3rem';
+          
+          // Create floating elements
+          createFloatingElements();
+          
+          // Show celebration messages
+          showCelebrationMessage();
+          
+          // Add celebration effect to numbers
+          document.querySelectorAll('.countdown-number').forEach(el => {
+            el.style.animation = 'glow 1.5s infinite alternate';
+          });
+          
+          return;
+        }
+      }
+      
+      // Calculate days, hours, minutes, seconds
+      const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+      
+      // Update the countdown display
+      document.getElementById('days').textContent = days.toString().padStart(2, '0');
+      document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+      document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+      document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+      
+      // Add pulsing animation to seconds
+      const secondsElement = document.getElementById('seconds');
+      secondsElement.style.transform = 'scale(1.1)';
+      setTimeout(() => {
+        secondsElement.style.transform = 'scale(1)';
+      }, 500);
+    }
+    
+    // Initialize
+    updateCountdown();
+    
+    // If today is the birthday, start celebration immediately
+    if (isBirthdayToday) {
+      document.querySelector('.countdown-title').textContent = '🎉 Happy Birthday! 🎉';
+      document.querySelector('.countdown-title').style.color = '#ff69b4';
+      document.querySelector('.countdown-title').style.fontSize = '1.3rem';
+      
+      // Create floating elements
+      createFloatingElements();
+      
+      // Show celebration messages
+      showCelebrationMessage();
+      
+      // Add celebration effect to numbers
+      document.querySelectorAll('.countdown-number').forEach(el => {
+        el.style.animation = 'glow 1.5s infinite alternate';
+      });
+    }
+    
+    // Update countdown every second
+    setInterval(updateCountdown, 1000);
+  </script>
+</body>
+</html>

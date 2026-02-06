@@ -1,0 +1,1675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="../images/heart.png" type="image/x-icon">
+    <title>Flowers & Wishes</title>
+    <style>
+        *,
+        *::after,
+        *::before {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --dark-color: #1a0a1a;
+            --pink-glow: rgba(255, 105, 180, 0.3);
+        }
+
+        body {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: var(--dark-color);
+            overflow: hidden;
+            perspective: 1000px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .night {
+            position: fixed;
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
+            width: 100%;
+            height: 100%;
+            filter: blur(0.1vmin);
+            background-image: 
+                radial-gradient(ellipse at top, transparent 0%, var(--dark-color)),
+                radial-gradient(ellipse at bottom, var(--dark-color), var(--pink-glow)),
+                repeating-linear-gradient(220deg, rgb(20, 5, 20) 0px, rgb(20, 5, 20) 19px, transparent 19px, transparent 22px),
+                repeating-linear-gradient(189deg, rgb(20, 5, 20) 0px, rgb(20, 5, 20) 19px, transparent 19px, transparent 22px),
+                repeating-linear-gradient(148deg, rgb(20, 5, 20) 0px, rgb(20, 5, 20) 19px, transparent 19px, transparent 22px),
+                linear-gradient(90deg, rgb(255, 182, 193), rgb(255, 105, 180));
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            padding: 20px;
+            z-index: 200;
+            background: linear-gradient(to bottom, rgba(26, 10, 26, 0.9), transparent);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: #fff;
+            text-shadow: 0 0 20px #ff69b4, 0 0 40px #ff1493;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .heart-icon {
+            font-size: 2rem;
+            animation: heartbeat 1.5s ease-in-out infinite;
+            color: #ff69b4;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+            50% { transform: scale(1); }
+            75% { transform: scale(1.2); }
+        }
+
+        .message-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 500px;
+            padding: 25px 35px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            border: 2px solid rgba(255, 105, 180, 0.5);
+            box-shadow: 0 10px 50px rgba(255, 105, 180, 0.4);
+            text-align: center;
+            z-index: 300;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .message-box.show { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .message-box .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: #ff69b4;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .message-box .close-btn:hover { transform: scale(1.2); }
+
+        .message-box p {
+            font-size: 1.1rem;
+            color: #ffb6c1;
+            font-style: italic;
+            line-height: 1.6;
+            text-shadow: 0 0 10px rgba(255, 182, 193, 0.5);
+        }
+
+        .message-box .signature {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #ff69b4;
+            font-weight: bold;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            z-index: 200;
+        }
+
+        .control-btn {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+        }
+
+        .control-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(255, 105, 180, 0.5);
+        }
+
+        .btn-message { background: linear-gradient(135deg, rgba(255, 105, 180, 0.8), rgba(255, 20, 147, 0.8)); }
+        .btn-flower { background: linear-gradient(135deg, rgba(76, 175, 80, 0.8), rgba(139, 195, 74, 0.8)); }
+        .btn-background { background: linear-gradient(135deg, rgba(156, 39, 176, 0.8), rgba(233, 30, 99, 0.8)); }
+        .btn-reset { background: linear-gradient(135deg, rgba(244, 67, 54, 0.8), rgba(255, 87, 34, 0.8)); }
+
+        .flowers {
+            position: relative;
+            transform: scale(0.75);
+            z-index: 10;
+            margin-bottom: -5vmin;
+        }
+
+        .flower {
+            position: absolute;
+            bottom: 5vmin;
+            transform-origin: bottom center;
+            z-index: 10;
+            --fl-speed: 0.8s;
+            cursor: pointer;
+            transition: filter 0.3s;
+        }
+
+        .flower:hover {
+            filter: brightness(1.3) drop-shadow(0 0 20px rgba(255, 255, 255, 0.7));
+        }
+
+        .flower--1 { animation: moving-flower-1 4s linear infinite; }
+        .flower--1 .flower__line { height: 70vmin; animation-delay: 0.3s; }
+
+        .flower--2 {
+            left: 50%;
+            transform: rotate(20deg);
+            animation: moving-flower-2 4s linear infinite;
+        }
+        .flower--2 .flower__line { height: 60vmin; animation-delay: 0.6s; }
+
+        .flower--3 {
+            left: 50%;
+            transform: rotate(-15deg);
+            animation: moving-flower-3 4s linear infinite;
+        }
+        .flower--3 .flower__line { animation-delay: 0.9s; }
+
+        .flower__leafs {
+            position: relative;
+            animation: blooming-flower 2s backwards;
+        }
+
+        .flower__leafs--1 { animation-delay: 1.1s; }
+        .flower__leafs--2 { animation-delay: 1.4s; }
+        .flower__leafs--3 { animation-delay: 1.7s; }
+
+        .flower__leafs::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            transform: translate(-50%, -100%);
+            width: 14vmin;
+            height: 14vmin;
+            background-color: #fff;
+            filter: blur(12vmin);
+        }
+
+        .flower__leaf {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 12vmin;
+            height: 16vmin;
+            border-radius: 51% 49% 47% 53%/44% 45% 55% 69%;
+            background-color: #fff;
+            background-image: linear-gradient(to top, #fff, #fff);
+            transform-origin: bottom center;
+            opacity: 0.9;
+            box-shadow: inset 0 0 3vmin rgba(255, 255, 255, 0.5);
+        }
+
+        .flower__leaf--1 { transform: translate(-10%, 1%) rotateY(40deg) rotateX(-50deg); }
+        .flower__leaf--2 { transform: translate(-50%, -4%) rotateX(40deg); }
+        .flower__leaf--3 { transform: translate(-90%, 0%) rotateY(45deg) rotateX(50deg); }
+        .flower__leaf--4 {
+            width: 12vmin;
+            height: 12vmin;
+            transform-origin: bottom left;
+            border-radius: 6vmin 14vmin 6vmin 6vmin;
+            transform: translate(0%, 18%) rotateX(70deg) rotate(-43deg);
+            background-image: linear-gradient(to top, rgba(255, 255, 255, 0.4), #fff);
+            z-index: 1;
+            opacity: 0.8;
+        }
+
+        .flower__white-circle {
+            position: absolute;
+            left: -5vmin;
+            top: -4vmin;
+            width: 13vmin;
+            height: 6vmin;
+            border-radius: 50%;
+            background-color: #fff;
+        }
+
+        .flower__white-circle::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 45%;
+            transform: translate(-50%, -50%);
+            width: 60%;
+            height: 60%;
+            border-radius: inherit;
+            background-image: linear-gradient(90deg, rgb(255, 235, 18), rgb(255, 206, 0));
+        }
+
+        .flower__line {
+            height: 55vmin;
+            width: 2vmin;
+            background-image: 
+                linear-gradient(to left, rgba(0, 0, 0, 0.2), transparent, rgba(255, 255, 255, 0.2)),
+                linear-gradient(to top, transparent 10%, #fff, #fff);
+            box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.5);
+            animation: grow-flower-tree 4s backwards;
+        }
+
+        .flower__line__leaf {
+            --w: 10vmin;
+            --h: calc(var(--w) + 3vmin);
+            position: absolute;
+            top: 20%;
+            left: 90%;
+            width: var(--w);
+            height: var(--h);
+            border-top-right-radius: var(--h);
+            border-bottom-left-radius: var(--h);
+            background-image: linear-gradient(to top, rgba(255, 255, 255, 0.4), #fff);
+        }
+
+        .flower__line__leaf--1 { transform: rotate(70deg) rotateY(30deg); }
+        .flower__line__leaf--2 { top: 45%; transform: rotate(70deg) rotateY(30deg); }
+        .flower__line__leaf--3,
+        .flower__line__leaf--4 {
+            border-top-right-radius: 0;
+            border-bottom-left-radius: 0;
+            border-top-left-radius: var(--h);
+            border-bottom-right-radius: var(--h);
+            left: -460%;
+            top: 12%;
+            transform: rotate(-70deg) rotateY(30deg);
+        }
+        .flower__line__leaf--4 { top: 40%; }
+
+        .flower__light {
+            position: absolute;
+            bottom: 0vmin;
+            width: 1vmin;
+            height: 1vmin;
+            background-color: #ff69b4;
+            border-radius: 50%;
+            filter: blur(0.2vmin);
+            animation: light-ans 4s linear infinite backwards;
+        }
+
+        .flower__light:nth-child(odd) { background-color: #fff; }
+        .flower__light--1 { left: -2vmin; animation-delay: 1s; }
+        .flower__light--2 { left: 3vmin; animation-delay: 0.5s; }
+        .flower__light--3 { left: -6vmin; animation-delay: 0.3s; }
+        .flower__light--4 { left: 6vmin; animation-delay: 0.9s; }
+        .flower__light--5 { left: -1vmin; animation-delay: 1.5s; }
+        .flower__light--6 { left: -4vmin; animation-delay: 3s; }
+        .flower__light--7 { left: 3vmin; animation-delay: 2s; }
+        .flower__light--8 { left: -6vmin; animation-delay: 3.5s; }
+
+        .flower__grass {
+            --c: #fff;
+            --line-w: 1.5vmin;
+            position: absolute;
+            bottom: 12vmin;
+            left: -7vmin;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            z-index: 20;
+            transform-origin: bottom center;
+            transform: rotate(-48deg) rotateY(40deg);
+        }
+
+        .flower__grass--1 { animation: moving-grass 2s linear infinite; }
+        .flower__grass--2 {
+            left: 2vmin;
+            bottom: 10vmin;
+            transform: scale(0.5) rotate(75deg) rotateX(10deg) rotateY(-200deg);
+            opacity: 0.8;
+            z-index: 0;
+        }
+
+        .flower__grass--top {
+            width: 7vmin;
+            height: 10vmin;
+            border-top-right-radius: 100%;
+            border-right: var(--line-w) solid var(--c);
+            transform-origin: bottom center;
+            transform: rotate(-2deg);
+        }
+
+        .flower__grass--bottom {
+            margin-top: -2px;
+            width: var(--line-w);
+            height: 25vmin;
+            background-image: linear-gradient(to top, transparent, var(--c));
+        }
+
+        .flower__grass__leaf {
+            --size: 10vmin;
+            position: absolute;
+            width: calc(var(--size) * 2.1);
+            height: var(--size);
+            border-top-left-radius: var(--size);
+            border-top-right-radius: var(--size);
+            background-image: linear-gradient(to top, transparent, transparent 30%, var(--c));
+            z-index: 100;
+        }
+
+        .flower__grass__leaf--1 { top: -6%; left: 30%; --size: 6vmin; transform: rotate(-20deg); }
+        .flower__grass__leaf--2 { top: -5%; left: -110%; --size: 6vmin; transform: rotate(10deg); }
+        .flower__grass__leaf--3 { top: 5%; left: 60%; --size: 8vmin; transform: rotate(-18deg) rotateX(-20deg); }
+        .flower__grass__leaf--4 { top: 6%; left: -135%; --size: 8vmin; transform: rotate(2deg); }
+        .flower__grass__leaf--5 { top: 20%; left: 60%; --size: 10vmin; transform: rotate(-24deg) rotateX(-20deg); }
+        .flower__grass__leaf--6 { top: 22%; left: -180%; --size: 10vmin; transform: rotate(10deg); }
+        .flower__grass__leaf--7 { top: 39%; left: 70%; --size: 10vmin; transform: rotate(-10deg); }
+        .flower__grass__leaf--8 { top: 40%; left: -215%; --size: 11vmin; transform: rotate(10deg); }
+
+        .flower__grass__overlay {
+            position: absolute;
+            top: -10%;
+            right: 0%;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            filter: blur(1.5vmin);
+            z-index: 100;
+        }
+
+        .long-g {
+            position: absolute;
+            bottom: 25vmin;
+            left: -42vmin;
+            transform-origin: bottom left;
+        }
+
+        .long-g--1 { bottom: 0vmin; transform: scale(0.8) rotate(-5deg); }
+        .long-g--2, .long-g--3 { bottom: -3vmin; left: -35vmin; transform: scale(0.6) rotateX(60deg); }
+        .long-g--3 { left: -17vmin; bottom: 0vmin; }
+        .long-g--4 { left: 25vmin; bottom: -3vmin; transform: scale(0.6) rotateX(60deg); }
+        .long-g--5 { left: 42vmin; bottom: 0vmin; transform: scale(0.8) rotate(2deg); }
+
+        .long-g .leaf {
+            --w: 15vmin;
+            --h: 40vmin;
+            --c: #fff;
+            position: absolute;
+            bottom: 0;
+            width: var(--w);
+            height: var(--h);
+            border-top-left-radius: 100%;
+            border-left: 2vmin solid var(--c);
+            -webkit-mask-image: linear-gradient(to top, transparent 20%, var(--dark-color));
+            transform-origin: bottom center;
+        }
+
+        .long-g .leaf--0 { left: 2vmin; animation: leaf-ans-1 4s linear infinite; }
+        .long-g .leaf--1 { --w: 5vmin; --h: 60vmin; animation: leaf-ans-1 4s linear infinite; }
+        .long-g .leaf--2 { --w: 10vmin; --h: 40vmin; left: -0.5vmin; bottom: 5vmin; transform-origin: bottom left; transform: rotateY(-180deg); animation: leaf-ans-2 3s linear infinite; }
+        .long-g .leaf--3 { --w: 5vmin; --h: 30vmin; left: -1vmin; bottom: 3.2vmin; transform-origin: bottom left; transform: rotate(-10deg) rotateY(-180deg); }
+
+        .bubble {
+            position: fixed;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, 
+                rgba(255, 255, 255, 0.9), 
+                rgba(255, 182, 193, 0.4) 40%,
+                rgba(255, 105, 180, 0.1) 60%,
+                transparent);
+            box-shadow: 
+                inset 0 0 20px rgba(255, 255, 255, 0.5),
+                0 0 10px rgba(255, 105, 180, 0.3);
+            pointer-events: auto;
+            cursor: pointer;
+            z-index: 50;
+            animation: floatBubble linear forwards;
+            transition: transform 0.2s;
+        }
+
+        .bubble:hover {
+            transform: scale(1.2);
+        }
+
+        /* Pop Effect */
+        .bubble-pop {
+            position: fixed;
+            font-size: 3rem;
+            pointer-events: none;
+            z-index: 300;
+            animation: popEmoji 0.8s ease-out forwards;
+        }
+
+        @keyframes popEmoji {
+            0% { transform: scale(0); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 1; }
+            100% { transform: scale(0.5); opacity: 0; }
+        }
+
+        /* Question Modal */
+        .question-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 500;
+            animation: fadeInModal 0.5s ease;
+        }
+
+        .question-modal.show {
+            display: flex;
+        }
+
+        @keyframes fadeInModal {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .question-box {
+            background: linear-gradient(135deg, #1a0a1a, #2d1a2d);
+            border: 2px solid #ff69b4;
+            border-radius: 20px;
+            padding: 30px 40px;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(255, 105, 180, 0.5);
+            animation: bounceIn 0.5s ease;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            70% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .question-emoji {
+            font-size: 4rem;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            color: #ffb6c1;
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .answer-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .answer-btn {
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .answer-btn.yes {
+            background: linear-gradient(135deg, #4CAF50, #8BC34A);
+            color: white;
+        }
+
+        .answer-btn.no {
+            background: linear-gradient(135deg, #f44336, #e91e63);
+            color: white;
+        }
+
+        .answer-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Response Box */
+        .response-box {
+            display: none;
+            text-align: center;
+        }
+
+        .response-box.show {
+            display: block;
+            animation: bounceIn 0.5s ease;
+        }
+
+        .response-emoji {
+            font-size: 5rem;
+            margin-bottom: 15px;
+        }
+
+        .response-text {
+            color: #ffb6c1;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+
+        .bubble::before {
+            content: '';
+            position: absolute;
+            top: 15%;
+            left: 20%;
+            width: 30%;
+            height: 30%;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+        }
+
+        @keyframes floatBubble {
+            0% { transform: translateY(0) translateX(0) scale(1); opacity: 0.8; }
+            50% { transform: translateY(-50vh) translateX(20px) scale(1.1); opacity: 0.6; }
+            100% { transform: translateY(-100vh) translateX(-20px) scale(0.8); opacity: 0; }
+        }
+
+        .floating-heart {
+            position: fixed;
+            font-size: 1.5rem;
+            pointer-events: none;
+            animation: floatUpHeart 2s ease-out forwards;
+            z-index: 200;
+        }
+
+        @keyframes floatUpHeart {
+            0% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+            100% { opacity: 0; transform: translateY(-150px) scale(0.5) rotate(20deg); }
+        }
+
+        /* Floating Daisy Flower */
+        .floating-daisy {
+            position: fixed;
+            pointer-events: none;
+            z-index: 100;
+            animation: floatUpDaisy 5s ease-out forwards;
+        }
+
+        .floating-daisy .daisy-petals {
+            position: relative;
+            width: 40px;
+            height: 40px;
+        }
+
+        .floating-daisy .daisy-petal {
+            position: absolute;
+            width: 15px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform-origin: center bottom;
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+        }
+
+        .floating-daisy .daisy-petal:nth-child(1) { transform: translate(-50%, -100%) rotate(0deg); }
+        .floating-daisy .daisy-petal:nth-child(2) { transform: translate(-50%, -100%) rotate(45deg); }
+        .floating-daisy .daisy-petal:nth-child(3) { transform: translate(-50%, -100%) rotate(90deg); }
+        .floating-daisy .daisy-petal:nth-child(4) { transform: translate(-50%, -100%) rotate(135deg); }
+        .floating-daisy .daisy-petal:nth-child(5) { transform: translate(-50%, -100%) rotate(180deg); }
+        .floating-daisy .daisy-petal:nth-child(6) { transform: translate(-50%, -100%) rotate(225deg); }
+        .floating-daisy .daisy-petal:nth-child(7) { transform: translate(-50%, -100%) rotate(270deg); }
+        .floating-daisy .daisy-petal:nth-child(8) { transform: translate(-50%, -100%) rotate(315deg); }
+
+        .floating-daisy .daisy-center {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: linear-gradient(135deg, #ffeb3b, #ffc107);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 10px rgba(255, 235, 59, 0.8);
+        }
+
+        @keyframes floatUpDaisy {
+            0% { 
+                opacity: 1; 
+                transform: translateY(0) rotate(0deg) scale(1); 
+            }
+            25% { 
+                transform: translateY(-25vh) translateX(30px) rotate(45deg) scale(1.1); 
+            }
+            50% { 
+                transform: translateY(-50vh) translateX(-20px) rotate(-30deg) scale(0.9); 
+            }
+            75% { 
+                transform: translateY(-75vh) translateX(25px) rotate(60deg) scale(0.7); 
+            }
+            100% { 
+                opacity: 0; 
+                transform: translateY(-100vh) translateX(-10px) rotate(-45deg) scale(0.4); 
+            }
+        }
+
+        /* Dynamic Flowers with Floating Effect */
+        .flower--dynamic {
+            position: fixed !important;
+            transform-origin: bottom center;
+        }
+
+        .flower--dynamic .flower__line {
+            animation: grow-flower-tree 1.5s backwards;
+        }
+
+        .flower--dynamic .flower__leafs {
+            animation: blooming-flower 0.8s backwards;
+        }
+
+        @keyframes float-flower {
+            0%, 100% { transform: translateY(0) rotate(var(--rotation, 0deg)) scale(var(--scale, 1)); }
+            25% { transform: translateY(-8px) rotate(calc(var(--rotation, 0deg) + 2deg)) scale(var(--scale, 1)); }
+            50% { transform: translateY(-5px) rotate(calc(var(--rotation, 0deg) - 1deg)) scale(var(--scale, 1)); }
+            75% { transform: translateY(-10px) rotate(calc(var(--rotation, 0deg) + 3deg)) scale(var(--scale, 1)); }
+        }
+
+        @keyframes appear-flower {
+            0% { opacity: 0; transform: translateY(50px) scale(0) rotate(var(--rotation, 0deg)); }
+            60% { opacity: 1; transform: translateY(-20px) scale(var(--scale, 1)) rotate(var(--rotation, 0deg)); }
+            100% { opacity: var(--final-opacity, 1); transform: translateY(0) scale(var(--scale, 1)) rotate(var(--rotation, 0deg)); }
+        }
+
+        .flower--dynamic.appear {
+            animation: appear-flower 1s ease-out forwards, float-flower 4s 1s ease-in-out infinite;
+        }
+
+        .flower.dancing {
+            animation: dance 0.5s ease-in-out 3 !important;
+        }
+
+        @keyframes dance {
+            0%, 100% { transform: rotate(-5deg) scale(1); }
+            25% { transform: rotate(5deg) scale(1.05); }
+            50% { transform: rotate(-3deg) scale(1); }
+            75% { transform: rotate(7deg) scale(1.08); }
+        }
+
+        @keyframes light-ans {
+            0% { opacity: 0; transform: translateY(0vmin); }
+            25% { opacity: 1; transform: translateY(-5vmin) translateX(-2vmin); }
+            50% { opacity: 1; transform: translateY(-15vmin) translateX(2vmin); filter: blur(0.2vmin); }
+            75% { transform: translateY(-20vmin) translateX(-2vmin); filter: blur(0.2vmin); }
+            100% { transform: translateY(-30vmin); opacity: 0; filter: blur(1vmin); }
+        }
+
+        @keyframes moving-flower-1 {
+            0%, 100% { transform: rotate(2deg); }
+            50% { transform: rotate(-2deg); }
+        }
+
+        @keyframes moving-flower-2 {
+            0%, 100% { transform: rotate(18deg); }
+            50% { transform: rotate(14deg); }
+        }
+
+        @keyframes moving-flower-3 {
+            0%, 100% { transform: rotate(-18deg); }
+            50% { transform: rotate(-20deg) rotateY(-10deg); }
+        }
+
+        @keyframes grow-flower-tree {
+            0% { height: 0; border-radius: 1vmin; }
+        }
+
+        @keyframes blooming-flower {
+            0% { transform: scale(0); }
+        }
+
+        @keyframes moving-grass {
+            0%, 100% { transform: rotate(-48deg) rotateY(40deg); }
+            50% { transform: rotate(-50deg) rotateY(40deg); }
+        }
+
+        @keyframes leaf-ans-1 {
+            0%, 100% { transform: rotate(-5deg) scale(1); }
+            50% { transform: rotate(5deg) scale(1.1); }
+        }
+
+        @keyframes leaf-ans-2 {
+            0%, 100% { transform: rotateY(-180deg) rotate(5deg); }
+            50% { transform: rotateY(-180deg) rotate(0deg) scale(1.1); }
+        }
+
+        .grow-ans { animation: grow-ans 2s var(--d) backwards; }
+        @keyframes grow-ans {
+            0% { transform: scale(0); opacity: 0; }
+        }
+
+        .growing-grass { animation: growing-grass-ans 1s 2s backwards; }
+        @keyframes growing-grass-ans {
+            0% { transform: scale(0); }
+        }
+
+        .not-loaded * { animation-play-state: paused !important; }
+
+        /* Pause all animations when question is shown */
+        .paused .bubble,
+        .paused .flower,
+        .paused .flower--dynamic,
+        .paused .floating-daisy,
+        .paused .flower__light,
+        .paused .growing-grass,
+        .paused .long-g .leaf {
+            animation-play-state: paused !important;
+        }
+
+        /* Tablet screens */
+        @media (max-width: 1024px) {
+            .header h1 { font-size: 1.8rem; }
+            .controls { gap: 8px; padding: 10px; }
+            .control-btn { padding: 10px 18px; font-size: 0.85rem; }
+            .flowers { transform: scale(0.7); margin-bottom: -8vmin; }
+            .question-box { padding: 25px 30px; max-width: 450px; margin: 0 15px; }
+            .question-emoji { font-size: 3.5rem; }
+            .question-text { font-size: 1.3rem; }
+            .answer-btn { padding: 12px 35px; font-size: 1rem; }
+            .response-emoji { font-size: 4rem; }
+            .response-text { font-size: 1.1rem; }
+        }
+
+        /* Mobile screens */
+        @media (max-width: 768px) {
+            .header { padding: 10px 15px; }
+            .header h1 { font-size: 1.3rem; }
+            .heart-icon { font-size: 1.2rem; }
+            .controls { 
+                bottom: 10px; 
+                gap: 5px; 
+                padding: 8px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .control-btn { 
+                padding: 8px 12px; 
+                font-size: 0.7rem;
+                min-width: auto;
+            }
+            .flowers { transform: scale(0.45); margin-bottom: -12vmin; }
+            .bubble { 
+                width: 15px !important; 
+                height: 15px !important; 
+            }
+            .question-box { 
+                padding: 20px 25px; 
+                max-width: 90%; 
+                margin: 0 10px;
+                border-radius: 15px;
+            }
+            .question-emoji { font-size: 3rem; margin-bottom: 10px; }
+            .question-text { font-size: 1.1rem; margin-bottom: 15px; }
+            .answer-buttons { gap: 10px; flex-wrap: wrap; }
+            .answer-btn { 
+                padding: 10px 25px; 
+                font-size: 0.9rem;
+                min-width: 100px;
+            }
+            .response-emoji { font-size: 3.5rem; margin-bottom: 10px; }
+            .response-text { font-size: 1rem; padding: 0 10px; }
+            .close-response-btn { 
+                padding: 10px 25px; 
+                font-size: 0.9rem;
+                margin-top: 15px;
+            }
+            .message-box { 
+                padding: 20px 25px; 
+                max-width: 90%;
+                margin: 0 10px;
+            }
+            .message-box p { font-size: 1rem; }
+        }
+
+        /* Small mobile screens */
+        @media (max-width: 480px) {
+            .header h1 { font-size: 1.1rem; }
+            .heart-icon { font-size: 1rem; }
+            .controls { 
+                bottom: 5px; 
+                gap: 4px;
+                padding: 5px;
+            }
+            .control-btn { 
+                padding: 6px 10px; 
+                font-size: 0.65rem;
+            }
+            .flowers { transform: scale(0.35); margin-bottom: -15vmin; }
+            .question-box { padding: 15px 20px; }
+            .question-emoji { font-size: 2.5rem; }
+            .question-text { font-size: 1rem; }
+            .answer-btn { 
+                padding: 8px 20px; 
+                font-size: 0.85rem;
+            }
+            .response-emoji { font-size: 3rem; }
+            .response-text { font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body class="not-loaded">
+    <div class="night"></div>
+
+    <header class="header">
+        <h1>
+            <span class="heart-icon">&#127804;</span>
+            Flowers & Wishes
+            <span class="heart-icon">&#127804;</span>
+        </h1>
+    </header>
+
+    <div class="message-box" id="messageBox">
+        <button class="close-btn" onclick="toggleMessage()">&times;</button>
+        <p>"Life is like a beautiful flower which I may not touch, but whose fragrance makes the garden a place of delight just the same."</p>
+    </div>
+
+    <!-- Question Modal -->
+    <div class="question-modal" id="questionModal">
+        <div class="question-box" id="questionBox">
+            <div class="question-emoji" id="questionEmoji">🌸</div>
+            <div class="question-text" id="questionText">Loading question...</div>
+            <div class="answer-buttons" id="answerButtons">
+                <button class="answer-btn yes" onclick="answerQuestion('yes')">Oo!</button>
+                <button class="answer-btn no" onclick="answerQuestion('no')">Hindi</button>
+            </div>
+        </div>
+        <div class="response-box" id="responseBox">
+            <div class="response-emoji" id="responseEmoji">💖</div>
+            <div class="response-text" id="responseText">...</div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="control-btn btn-message" onclick="toggleMessage()">Show Message</button>
+        <button class="control-btn btn-flower" onclick="addMoreFlowers()">Add Flowers</button>
+        <button class="control-btn btn-background" onclick="changeBackground()">Change Theme</button>
+        <button class="control-btn btn-reset" onclick="resetAll()">Reset</button>
+    </div>
+
+    <div class="flowers" id="flowerGarden">
+        <!-- Flower 1 -->
+        <div class="flower flower--1" onclick="handleFlowerClick(this, event)">
+            <div class="flower__leafs flower__leafs--1">
+                <div class="flower__leaf flower__leaf--1"></div>
+                <div class="flower__leaf flower__leaf--2"></div>
+                <div class="flower__leaf flower__leaf--3"></div>
+                <div class="flower__leaf flower__leaf--4"></div>
+                <div class="flower__white-circle"></div>
+                <div class="flower__light flower__light--1"></div>
+                <div class="flower__light flower__light--2"></div>
+                <div class="flower__light flower__light--3"></div>
+                <div class="flower__light flower__light--4"></div>
+                <div class="flower__light flower__light--5"></div>
+                <div class="flower__light flower__light--6"></div>
+                <div class="flower__light flower__light--7"></div>
+                <div class="flower__light flower__light--8"></div>
+            </div>
+            <div class="flower__line">
+                <div class="flower__line__leaf flower__line__leaf--1"></div>
+                <div class="flower__line__leaf flower__line__leaf--2"></div>
+                <div class="flower__line__leaf flower__line__leaf--3"></div>
+                <div class="flower__line__leaf flower__line__leaf--4"></div>
+            </div>
+        </div>
+
+        <!-- Flower 2 -->
+        <div class="flower flower--2" onclick="handleFlowerClick(this, event)">
+            <div class="flower__leafs flower__leafs--2">
+                <div class="flower__leaf flower__leaf--1"></div>
+                <div class="flower__leaf flower__leaf--2"></div>
+                <div class="flower__leaf flower__leaf--3"></div>
+                <div class="flower__leaf flower__leaf--4"></div>
+                <div class="flower__white-circle"></div>
+                <div class="flower__light flower__light--1"></div>
+                <div class="flower__light flower__light--2"></div>
+                <div class="flower__light flower__light--3"></div>
+                <div class="flower__light flower__light--4"></div>
+                <div class="flower__light flower__light--5"></div>
+                <div class="flower__light flower__light--6"></div>
+                <div class="flower__light flower__light--7"></div>
+                <div class="flower__light flower__light--8"></div>
+            </div>
+            <div class="flower__line">
+                <div class="flower__line__leaf flower__line__leaf--1"></div>
+                <div class="flower__line__leaf flower__line__leaf--2"></div>
+                <div class="flower__line__leaf flower__line__leaf--3"></div>
+                <div class="flower__line__leaf flower__line__leaf--4"></div>
+            </div>
+        </div>
+
+        <!-- Flower 3 -->
+        <div class="flower flower--3" onclick="handleFlowerClick(this, event)">
+            <div class="flower__leafs flower__leafs--3">
+                <div class="flower__leaf flower__leaf--1"></div>
+                <div class="flower__leaf flower__leaf--2"></div>
+                <div class="flower__leaf flower__leaf--3"></div>
+                <div class="flower__leaf flower__leaf--4"></div>
+                <div class="flower__white-circle"></div>
+                <div class="flower__light flower__light--1"></div>
+                <div class="flower__light flower__light--2"></div>
+                <div class="flower__light flower__light--3"></div>
+                <div class="flower__light flower__light--4"></div>
+                <div class="flower__light flower__light--5"></div>
+                <div class="flower__light flower__light--6"></div>
+                <div class="flower__light flower__light--7"></div>
+                <div class="flower__light flower__light--8"></div>
+            </div>
+            <div class="flower__line">
+                <div class="flower__line__leaf flower__line__leaf--1"></div>
+                <div class="flower__line__leaf flower__line__leaf--2"></div>
+                <div class="flower__line__leaf flower__line__leaf--3"></div>
+                <div class="flower__line__leaf flower__line__leaf--4"></div>
+            </div>
+        </div>
+
+        <!-- Grass -->
+        <div class="growing-grass">
+            <div class="flower__grass flower__grass--1">
+                <div class="flower__grass--top"></div>
+                <div class="flower__grass--bottom"></div>
+                <div class="flower__grass__leaf flower__grass__leaf--1"></div>
+                <div class="flower__grass__leaf flower__grass__leaf--2"></div>
+                <div class="flower__grass__leaf flower__grass__leaf--3"></div>
+                <div class="flower__grass__leaf flower__grass__leaf--4"></div>
+                <div class="flower__grass__leaf flower__grass__leaf--5"></div>
+                <div class="flower__grass__leaf flower__grass__leaf--6"></div>
+                <div class="flower__grass__leaf flower__grass__leaf--7"></div>
+                <div class="flower__grass__leaf flower__grass__leaf--8"></div>
+                <div class="flower__grass__overlay"></div>
+            </div>
+        </div>
+
+        <div class="growing-grass">
+            <div class="flower__grass flower__grass--2">
+                <div class="flower__grass--top"></div>
+                <div class="flower__grass--bottom"></div>
+                <div class="flower__grass__leaf flower__grass__leaf--1"></div>
+                <div class="flower__grass__leaf flower__grass__leaf--2"></div>
+                <div class="flower__grass__leaf flower__grass__leaf--3"></div>
+                <div class="flower__grass__leaf flower__grass__leaf--4"></div>
+                <div class="flower__grass__leaf flower__grass__leaf--5"></div>
+                <div class="flower__grass__leaf flower__grass__leaf--6"></div>
+                <div class="flower__grass__leaf flower__grass__leaf--7"></div>
+                <div class="flower__grass__leaf flower__grass__leaf--8"></div>
+                <div class="flower__grass__overlay"></div>
+            </div>
+        </div>
+
+        <!-- Long Grass -->
+        <div class="long-g long-g--0">
+            <div class="grow-ans" style="--d:3s"><div class="leaf leaf--0"></div></div>
+            <div class="grow-ans" style="--d:2.2s"><div class="leaf leaf--1"></div></div>
+            <div class="grow-ans" style="--d:3.4s"><div class="leaf leaf--2"></div></div>
+            <div class="grow-ans" style="--d:3.6s"><div class="leaf leaf--3"></div></div>
+        </div>
+
+        <div class="long-g long-g--1">
+            <div class="grow-ans" style="--d:3.6s"><div class="leaf leaf--0"></div></div>
+            <div class="grow-ans" style="--d:3.8s"><div class="leaf leaf--1"></div></div>
+            <div class="grow-ans" style="--d:4s"><div class="leaf leaf--2"></div></div>
+            <div class="grow-ans" style="--d:4.2s"><div class="leaf leaf--3"></div></div>
+        </div>
+
+        <div class="long-g long-g--4">
+            <div class="grow-ans" style="--d:4s"><div class="leaf leaf--0"></div></div>
+            <div class="grow-ans" style="--d:4.2s"><div class="leaf leaf--1"></div></div>
+            <div class="grow-ans" style="--d:3s"><div class="leaf leaf--2"></div></div>
+            <div class="grow-ans" style="--d:3.6s"><div class="leaf leaf--3"></div></div>
+        </div>
+
+        <div class="long-g long-g--5">
+            <div class="grow-ans" style="--d:4s"><div class="leaf leaf--0"></div></div>
+            <div class="grow-ans" style="--d:4.2s"><div class="leaf leaf--1"></div></div>
+            <div class="grow-ans" style="--d:3s"><div class="leaf leaf--2"></div></div>
+            <div class="grow-ans" style="--d:3.6s"><div class="leaf leaf--3"></div></div>
+        </div>
+    </div>
+
+    <script>
+        const state = {
+            currentTheme: 0,
+            flowerCount: 3,
+            nextFlowerSide: 'left',
+            leftFlowerIndex: 0,
+            rightFlowerIndex: 0,
+            continuousFlowerCount: 0, // How many flowers float every second
+            floatingInterval: null,   // Interval for continuous floating
+            themes: [
+                { dark: '#1a0a1a', glow: 'rgba(255, 105, 180, 0.3)' },
+                { dark: '#0a0a1a', glow: 'rgba(138, 43, 226, 0.3)' },
+                { dark: '#1a0a0a', glow: 'rgba(220, 20, 60, 0.3)' },
+                { dark: '#1a1a0a', glow: 'rgba(255, 215, 0, 0.3)' }
+            ],
+            // Positions near left grass - HIGHER bottom = BIGGER flower (depth effect)
+            leftGrassPositions: [
+                { left: 3, bottom: 5, scale: 0.5 },      // maliit sa baba
+                { left: 8, bottom: 10, scale: 0.65 },    // maliit
+                { left: 12, bottom: 15, scale: 0.8 },    // medium
+                { left: 5, bottom: 20, scale: 0.95 },    // medium-big
+                { left: 15, bottom: 25, scale: 1.1 },    // malaki
+                { left: 6, bottom: 30, scale: 1.2 },     // mas malaki
+                { left: 10, bottom: 35, scale: 1.3 },    // malaki pa
+                { left: 4, bottom: 38, scale: 1.35 },    // pinakamalaki
+                { left: 18, bottom: 8, scale: 0.55 },    // maliit sa baba
+                { left: 7, bottom: 18, scale: 0.85 }     // medium
+            ],
+            // Positions near right grass - HIGHER bottom = BIGGER flower (depth effect)
+            rightGrassPositions: [
+                { left: 92, bottom: 5, scale: 0.5 },     // maliit sa baba
+                { left: 87, bottom: 10, scale: 0.65 },   // maliit
+                { left: 83, bottom: 15, scale: 0.8 },    // medium
+                { left: 95, bottom: 20, scale: 0.95 },   // medium-big
+                { left: 80, bottom: 25, scale: 1.1 },    // malaki
+                { left: 90, bottom: 30, scale: 1.2 },    // mas malaki
+                { left: 85, bottom: 35, scale: 1.3 },    // malaki pa
+                { left: 93, bottom: 38, scale: 1.35 },   // pinakamalaki
+                { left: 78, bottom: 8, scale: 0.55 },    // maliit sa baba
+                { left: 88, bottom: 18, scale: 0.85 }    // medium
+            ]
+        };
+
+        function init() {
+            setTimeout(() => {
+                document.body.classList.remove('not-loaded');
+            }, 100);
+            startContinuousBubbles();
+            setTimeout(() => {
+                addInitialGardenFlowers();
+            }, 2000);
+        }
+
+        function addInitialGardenFlowers() {
+            const garden = document.getElementById('flowerGarden');
+            // Reduced initial flowers - varied sizes (malapit sa taas = malaki)
+            const gardenPositions = [
+                { left: 5, bottom: 6, scale: 0.55 },     // maliit sa baba left
+                { left: 92, bottom: 25, scale: 1.1 },    // malaki sa taas right
+                { left: 12, bottom: 15, scale: 0.8 },    // medium left
+            ];
+            
+            gardenPositions.forEach((pos, i) => {
+                setTimeout(() => {
+                    const flower = createGardenFlower(pos.left, pos.bottom, pos.scale);
+                    garden.appendChild(flower);
+                    state.flowerCount++;
+                }, i * 150);
+            });
+        }
+
+        function createGardenFlower(leftPercent, bottomVmin, scale) {
+            const flower = document.createElement('div');
+            flower.className = 'flower flower--dynamic appear';
+            flower.onclick = function(e) { handleFlowerClick(this, e); };
+            
+            const rotation = (Math.random() * 20 - 10);
+            const blur = scale < 0.4 ? 0.5 : 0;
+            const opacity = scale < 0.4 ? 0.6 : (0.85 + Math.random() * 0.15);
+            const zIndex = Math.floor(scale * 12);
+            const stemHeight = 20 + scale * 40;
+            
+            flower.style.position = 'fixed';
+            flower.style.left = `${leftPercent}%`;
+            flower.style.bottom = `${bottomVmin}vmin`;
+            flower.style.setProperty('--rotation', `${rotation}deg`);
+            flower.style.setProperty('--scale', scale);
+            flower.style.setProperty('--final-opacity', opacity);
+            flower.style.zIndex = zIndex;
+            flower.style.filter = blur > 0 ? `blur(${blur}px)` : 'none';
+            flower.style.transformOrigin = 'bottom center';
+            
+            const animDelay = Math.random() * 2;
+            flower.style.animationDelay = `0s, ${animDelay}s`;
+
+            const leafs = document.createElement('div');
+            leafs.className = 'flower__leafs';
+            
+            for (let i = 1; i <= 4; i++) {
+                const leaf = document.createElement('div');
+                leaf.className = `flower__leaf flower__leaf--${i}`;
+                leafs.appendChild(leaf);
+            }
+
+            const whiteCircle = document.createElement('div');
+            whiteCircle.className = 'flower__white-circle';
+            leafs.appendChild(whiteCircle);
+
+            if (scale > 0.5) {
+                for (let i = 1; i <= 8; i++) {
+                    const light = document.createElement('div');
+                    light.className = `flower__light flower__light--${i}`;
+                    leafs.appendChild(light);
+                }
+            }
+
+            flower.appendChild(leafs);
+
+            const line = document.createElement('div');
+            line.className = 'flower__line';
+            line.style.height = `${stemHeight}vmin`;
+
+            const numLeaves = scale < 0.4 ? 2 : 4;
+            for (let i = 1; i <= numLeaves; i++) {
+                const lineLeaf = document.createElement('div');
+                lineLeaf.className = `flower__line__leaf flower__line__leaf--${(i % 4) + 1}`;
+                line.appendChild(lineLeaf);
+            }
+
+            flower.appendChild(line);
+            return flower;
+        }
+
+        function createDaisyFlower() {
+            const flower = document.createElement('div');
+            flower.className = 'flower flower--dynamic appear';
+            flower.onclick = function(e) { handleFlowerClick(this, e); };
+            
+            const verticalPos = Math.random() * 100;
+            let scale, blur, opacity, zIndex, stemHeight;
+            
+            if (verticalPos < 25) {
+                scale = 0.25 + Math.random() * 0.15;
+                blur = 1;
+                opacity = 0.5 + Math.random() * 0.2;
+                zIndex = 1;
+                stemHeight = 15 + Math.random() * 10;
+            } else if (verticalPos < 50) {
+                scale = 0.4 + Math.random() * 0.2;
+                blur = 0.3;
+                opacity = 0.7 + Math.random() * 0.2;
+                zIndex = 3;
+                stemHeight = 25 + Math.random() * 15;
+            } else if (verticalPos < 75) {
+                scale = 0.55 + Math.random() * 0.25;
+                blur = 0;
+                opacity = 0.85 + Math.random() * 0.1;
+                zIndex = 6;
+                stemHeight = 35 + Math.random() * 15;
+            } else {
+                scale = 0.75 + Math.random() * 0.3;
+                blur = 0;
+                opacity = 0.95 + Math.random() * 0.05;
+                zIndex = 10;
+                stemHeight = 45 + Math.random() * 20;
+            }
+            
+            const leftPercent = 5 + Math.random() * 90;
+            const rotation = (Math.random() * 30 - 15);
+            const bottomPos = 5 + (100 - verticalPos) * 0.5;
+            
+            flower.style.position = 'fixed';
+            flower.style.left = `${leftPercent}%`;
+            flower.style.bottom = `${bottomPos}vmin`;
+            flower.style.setProperty('--rotation', `${rotation}deg`);
+            flower.style.setProperty('--scale', scale);
+            flower.style.setProperty('--final-opacity', opacity);
+            flower.style.zIndex = zIndex;
+            flower.style.filter = blur > 0 ? `blur(${blur}px)` : 'none';
+            flower.style.transformOrigin = 'bottom center';
+            
+            const animDelay = Math.random() * 2;
+            flower.style.animationDelay = `0s, ${animDelay}s`;
+
+            const leafs = document.createElement('div');
+            leafs.className = 'flower__leafs';
+            
+            for (let i = 1; i <= 4; i++) {
+                const leaf = document.createElement('div');
+                leaf.className = `flower__leaf flower__leaf--${i}`;
+                leafs.appendChild(leaf);
+            }
+
+            const whiteCircle = document.createElement('div');
+            whiteCircle.className = 'flower__white-circle';
+            leafs.appendChild(whiteCircle);
+
+            if (verticalPos > 50) {
+                for (let i = 1; i <= 8; i++) {
+                    const light = document.createElement('div');
+                    light.className = `flower__light flower__light--${i}`;
+                    leafs.appendChild(light);
+                }
+            }
+
+            flower.appendChild(leafs);
+
+            const line = document.createElement('div');
+            line.className = 'flower__line';
+            line.style.height = `${stemHeight}vmin`;
+
+            const numLeaves = verticalPos < 40 ? 1 : 4;
+            for (let i = 1; i <= numLeaves; i++) {
+                const lineLeaf = document.createElement('div');
+                lineLeaf.className = `flower__line__leaf flower__line__leaf--${(i % 4) + 1}`;
+                line.appendChild(lineLeaf);
+            }
+
+            flower.appendChild(line);
+            return flower;
+        }
+
+        function handleFlowerClick(flower, event) {
+            event.stopPropagation();
+            flower.classList.remove('dancing');
+            void flower.offsetWidth;
+            flower.classList.add('dancing');
+            createFloatingHearts(event.clientX, event.clientY);
+            setTimeout(() => {
+                flower.classList.remove('dancing');
+            }, 1500);
+        }
+
+        function createFloatingHearts(x, y) {
+            const heartEmojis = ['❤', '💕', '💗', '💖', '💘', '💝'];
+            const colors = ['#ff1493', '#ff69b4', '#dc143c', '#ff6b6b', '#e91e63'];
+
+            for (let i = 0; i < 8; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'floating-heart';
+                    heart.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+                    const offsetX = (Math.random() - 0.5) * 80;
+                    const offsetY = (Math.random() - 0.5) * 40;
+                    heart.style.left = `${x + offsetX}px`;
+                    heart.style.top = `${y + offsetY}px`;
+                    heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+                    document.body.appendChild(heart);
+                    setTimeout(() => heart.remove(), 2000);
+                }, i * 80);
+            }
+        }
+
+        function createFloatingDaisy() {
+            const daisy = document.createElement('div');
+            daisy.className = 'floating-daisy';
+            
+            const petals = document.createElement('div');
+            petals.className = 'daisy-petals';
+            
+            // Create 8 petals
+            for (let i = 0; i < 8; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'daisy-petal';
+                petals.appendChild(petal);
+            }
+            
+            // Create center
+            const center = document.createElement('div');
+            center.className = 'daisy-center';
+            petals.appendChild(center);
+            
+            daisy.appendChild(petals);
+            
+            // Random position at bottom
+            const scale = 0.6 + Math.random() * 0.8;
+            daisy.style.left = `${Math.random() * (window.innerWidth - 50)}px`;
+            daisy.style.bottom = '0px';
+            daisy.style.transform = `scale(${scale})`;
+            
+            return daisy;
+        }
+
+        function addFloatingDaisies(count) {
+            for (let i = 0; i < count; i++) {
+                setTimeout(() => {
+                    const daisy = createFloatingDaisy();
+                    document.body.appendChild(daisy);
+                    // Remove after animation completes (5s)
+                    setTimeout(() => daisy.remove(), 5500);
+                }, i * 200);
+            }
+        }
+
+        // Questions and Answers
+        const questions = [
+            // ✨ WISHES & BLESSINGS
+            { emoji: '🌸', question: 'Alam mo bang special ka?', yesResponse: { emoji: '💖', text: 'Yes! Never forget that you matter!' }, noResponse: { emoji: '🤗', text: 'Alam mo na ngayon - sobrang special mo!' } },
+            { emoji: '✨', question: 'Ready ka ba sa blessings?', yesResponse: { emoji: '🙏', text: 'Good things are coming your way!' }, noResponse: { emoji: '💫', text: 'Ready ka man o hindi, blessings are on the way!' } },
+            { emoji: '🌈', question: 'Believe ka ba sa miracles?', yesResponse: { emoji: '⭐', text: 'Miracles happen everyday - ikaw isa dun!' }, noResponse: { emoji: '🌟', text: 'You are a miracle! Believe it!' } },
+            { emoji: '💪', question: 'Kaya mo pa ba?', yesResponse: { emoji: '🦾', text: 'Yes! You are stronger than you know!' }, noResponse: { emoji: '🤝', text: 'Kaya mo yan! Hindi ka mag-isa!' } },
+            { emoji: '🌻', question: 'May ngumiti sayo today?', yesResponse: { emoji: '😊', text: 'Sana lagi kang ngingitian ng mundo!' }, noResponse: { emoji: '🌸', text: 'Eto smile ko para sayo! 😊💕' } },
+            { emoji: '💕', question: 'Feel mo bang loved ka?', yesResponse: { emoji: '🥰', text: 'You deserve all the love in the world!' }, noResponse: { emoji: '💖', text: 'You are loved more than you know!' } },
+            { emoji: '🙏', question: 'Grateful ka ba today?', yesResponse: { emoji: '✨', text: 'Grateful hearts attract more blessings!' }, noResponse: { emoji: '🌟', text: 'May maraming dapat ikagrateful - look around!' } },
+            { emoji: '🌟', question: 'Naniniwala ka ba sa sarili mo?', yesResponse: { emoji: '💪', text: 'Good! Never stop believing in yourself!' }, noResponse: { emoji: '🤗', text: 'Ako naniniwala sayo! You got this!' } },
+            
+            // 💖 ENCOURAGEMENT
+            { emoji: '🌷', question: 'Kumain ka na ba?', yesResponse: { emoji: '😋', text: 'Good! Healthy body, happy soul!' }, noResponse: { emoji: '🍕', text: 'Kain na! You deserve good food!' } },
+            { emoji: '😴', question: 'Nakapahinga ka na ba?', yesResponse: { emoji: '😌', text: 'Rest is self-love! Keep it up!' }, noResponse: { emoji: '🛋️', text: 'Pahinga ka ha? You deserve rest!' } },
+            { emoji: '💧', question: 'Uminom ka na ba ng tubig?', yesResponse: { emoji: '💦', text: 'Hydrated queen/king! Healthy!' }, noResponse: { emoji: '🥤', text: 'Drink water! Your body needs it!' } },
+            { emoji: '☀️', question: 'May sunshine sa araw mo?', yesResponse: { emoji: '🌈', text: 'Sana everyday sunny ang vibes mo!' }, noResponse: { emoji: '🌻', text: 'Be your own sunshine today!' } },
+            { emoji: '🎉', question: 'May celebration ka ba today?', yesResponse: { emoji: '🥳', text: 'Celebrate every little win!' }, noResponse: { emoji: '🎊', text: 'Celebrate yourself - you deserve it!' } },
+            { emoji: '🌙', question: 'Peaceful ba ang gabi mo?', yesResponse: { emoji: '✨', text: 'Sweet dreams await you!' }, noResponse: { emoji: '🧘', text: 'May peace find your heart tonight!' } },
+            { emoji: '🦋', question: 'Feel mo bang free ka?', yesResponse: { emoji: '🕊️', text: 'Fly high! The sky is yours!' }, noResponse: { emoji: '💫', text: 'Let go of worries - be free!' } },
+            { emoji: '🎵', question: 'May song ka ba sa heart?', yesResponse: { emoji: '🎶', text: 'Keep the music alive in you!' }, noResponse: { emoji: '🎧', text: 'Find your song - life is beautiful!' } },
+            
+            // 🌺 WARM WISHES
+            { emoji: '🌺', question: 'Sana masaya ka today?', yesResponse: { emoji: '🥰', text: 'Yay! Sana everyday ganyan!' }, noResponse: { emoji: '🌸', text: 'Darating din ang happiness mo!' } },
+            { emoji: '💐', question: 'Gusto mo ng virtual flowers?', yesResponse: { emoji: '🌷', text: 'Here! All flowers for you! 💐🌸🌺' }, noResponse: { emoji: '⭐', text: 'Okay, stars na lang! ⭐✨💫' } },
+            { emoji: '🧸', question: 'Need mo ba ng yakap?', yesResponse: { emoji: '🤗', text: '*Sending virtual huuuug* 💕' }, noResponse: { emoji: '💖', text: 'Yakap ka pa rin! *huuug*' } },
+            { emoji: '☕', question: 'Nagre-relax ka ba?', yesResponse: { emoji: '😌', text: 'Good! You deserve peace!' }, noResponse: { emoji: '🧘', text: 'Take a deep breath. Relax ka muna!' } },
+            { emoji: '🌼', question: 'Bloom ka ba today?', yesResponse: { emoji: '🌸', text: 'Bloom where you are planted!' }, noResponse: { emoji: '🌱', text: 'Its okay, growth takes time!' } },
+            { emoji: '🎀', question: 'Feel mo bang blessed ka?', yesResponse: { emoji: '🙏', text: 'More blessings are coming!' }, noResponse: { emoji: '✨', text: 'You are more blessed than you know!' } },
+            { emoji: '🌞', question: 'Sunshine ka ba today?', yesResponse: { emoji: '☀️', text: 'Keep shining bright!' }, noResponse: { emoji: '🌈', text: 'Be someones sunshine today!' } },
+            { emoji: '💝', question: 'May nag-aalaga ba sayo?', yesResponse: { emoji: '🥰', text: 'Cherish those who love you!' }, noResponse: { emoji: '💖', text: 'You are cared for - believe it!' } },
+            
+            // 🌈 POSITIVITY
+            { emoji: '⭐', question: 'Star ka ba today?', yesResponse: { emoji: '🌟', text: 'Shine bright like a star!' }, noResponse: { emoji: '✨', text: 'You are a star! Believe it!' } },
+            { emoji: '🌊', question: 'Calm ba ang waves mo?', yesResponse: { emoji: '🏖️', text: 'Peace like the ocean - beautiful!' }, noResponse: { emoji: '🌅', text: 'After every storm comes calm!' } },
+            { emoji: '🎈', question: 'Light ba ang feeling mo?', yesResponse: { emoji: '🎉', text: 'Keep that lightness! Joy!' }, noResponse: { emoji: '🎈', text: 'Let go of heavy feelings! Float!' } },
+            { emoji: '🍀', question: 'Lucky ka ba today?', yesResponse: { emoji: '🎰', text: 'More luck is coming your way!' }, noResponse: { emoji: '🌟', text: 'Make your own luck - you can do it!' } },
+            { emoji: '🔥', question: 'Motivated ka ba?', yesResponse: { emoji: '💪', text: 'Keep that fire burning!' }, noResponse: { emoji: '🌟', text: 'Find your spark - its inside you!' } },
+            { emoji: '🌿', question: 'Growing ka ba?', yesResponse: { emoji: '🌳', text: 'Keep growing! You are amazing!' }, noResponse: { emoji: '🌱', text: 'Every day is a chance to grow!' } },
+            { emoji: '💎', question: 'Alam mo bang valuable ka?', yesResponse: { emoji: '✨', text: 'Yes! You are priceless!' }, noResponse: { emoji: '💖', text: 'You are a rare gem - never forget!' } },
+            { emoji: '🏆', question: 'Winner ka ba today?', yesResponse: { emoji: '🥇', text: 'Champion vibes! Keep winning!' }, noResponse: { emoji: '💪', text: 'You are a winner in progress!' } },
+            
+            // 💫 COMFORT
+            { emoji: '🌙', question: 'Okay lang ba lahat?', yesResponse: { emoji: '😊', text: 'Glad to hear! Keep smiling!' }, noResponse: { emoji: '🤗', text: 'Its okay not to be okay. I am here!' } },
+            { emoji: '💭', question: 'May bumabagabag ba sayo?', yesResponse: { emoji: '🤝', text: 'Let it go. You will be okay!' }, noResponse: { emoji: '😌', text: 'Good! Peace of mind is precious!' } },
+            { emoji: '🕊️', question: 'At peace ka ba?', yesResponse: { emoji: '🧘', text: 'Inner peace is true wealth!' }, noResponse: { emoji: '🌸', text: 'May peace find your heart today!' } },
+            { emoji: '🌸', question: 'Nagpa-pamper ka na ba?', yesResponse: { emoji: '💅', text: 'Self-love is important! Keep it up!' }, noResponse: { emoji: '🛁', text: 'Treat yourself! You deserve it!' } },
+            { emoji: '🎭', question: 'Okay ka lang ba talaga?', yesResponse: { emoji: '💖', text: 'Thats wonderful! Stay positive!' }, noResponse: { emoji: '🤗', text: 'Its okay. Tomorrow is a new day!' } },
+            { emoji: '💫', question: 'Hopeful ka ba?', yesResponse: { emoji: '🌟', text: 'Hope is beautiful! Keep it alive!' }, noResponse: { emoji: '🌈', text: 'There is always hope! Believe!' } },
+            { emoji: '🌻', question: 'May reason ka ba to smile?', yesResponse: { emoji: '😊', text: 'Keep collecting reasons to smile!' }, noResponse: { emoji: '🌸', text: 'You ARE the reason to smile!' } },
+            { emoji: '💗', question: 'Full ba ang heart mo?', yesResponse: { emoji: '💖', text: 'A full heart is a blessed heart!' }, noResponse: { emoji: '💕', text: 'Filling your heart with love now!' } },
+            
+            // 🎊 CELEBRATION
+            { emoji: '🎂', question: 'Celebrate ka ba today?', yesResponse: { emoji: '🥳', text: 'Every day is worth celebrating!' }, noResponse: { emoji: '🎉', text: 'Celebrate small wins! You are doing great!' } },
+            { emoji: '🎁', question: 'May surprise ka ba today?', yesResponse: { emoji: '🎀', text: 'Life is full of beautiful surprises!' }, noResponse: { emoji: '✨', text: 'Surprise is on its way to you!' } },
+            { emoji: '🥂', question: 'May toast ka ba today?', yesResponse: { emoji: '🍾', text: 'Cheers to you and your journey!' }, noResponse: { emoji: '🥤', text: 'Toast to yourself - you are amazing!' } },
+            { emoji: '🎪', question: 'Fun ba ang life mo?', yesResponse: { emoji: '🎡', text: 'Life should be fun! Enjoy!' }, noResponse: { emoji: '🎢', text: 'Add more fun to your days!' } },
+            { emoji: '🎤', question: 'May song ba sa puso mo?', yesResponse: { emoji: '🎵', text: 'Sing your heart out!' }, noResponse: { emoji: '🎶', text: 'Find your song and sing it loud!' } },
+            { emoji: '💃', question: 'Dancing ka ba sa life?', yesResponse: { emoji: '🕺', text: 'Dance through life! Joy!' }, noResponse: { emoji: '🎵', text: 'Dance even without music!' } },
+            { emoji: '📸', question: 'May captured moments ka ba?', yesResponse: { emoji: '🖼️', text: 'Memories are treasures!' }, noResponse: { emoji: '📷', text: 'Create beautiful memories today!' } },
+            { emoji: '🌟', question: 'Shining ka ba?', yesResponse: { emoji: '✨', text: 'Keep shining! The world needs your light!' }, noResponse: { emoji: '💫', text: 'Shine anyway! Your light matters!' } },
+            
+            // 🌷 SELF-LOVE
+            { emoji: '💖', question: 'Love mo ba sarili mo?', yesResponse: { emoji: '🥰', text: 'Self-love is the best love!' }, noResponse: { emoji: '💕', text: 'Start loving yourself - you deserve it!' } },
+            { emoji: '👑', question: 'Royalty ba ang feeling mo?', yesResponse: { emoji: '👸', text: 'You are royalty! Act like it!' }, noResponse: { emoji: '💎', text: 'You are a queen/king! Own it!' } },
+            { emoji: '🌹', question: 'Beautiful ka ba?', yesResponse: { emoji: '🌺', text: 'Inside and out - beautiful!' }, noResponse: { emoji: '🌸', text: 'You are beautiful - believe it!' } },
+            { emoji: '💪', question: 'Proud ka ba sa sarili mo?', yesResponse: { emoji: '🏆', text: 'You should be! Youve come so far!' }, noResponse: { emoji: '⭐', text: 'Be proud! You are doing great!' } },
+            { emoji: '🦋', question: 'Transformed ka na ba?', yesResponse: { emoji: '🌸', text: 'Beautiful transformation!' }, noResponse: { emoji: '🐛', text: 'Transformation takes time - be patient!' } },
+            { emoji: '🌺', question: 'Blooming ka ba?', yesResponse: { emoji: '🌷', text: 'Keep blooming beautifully!' }, noResponse: { emoji: '🌱', text: 'Your time to bloom is coming!' } },
+            { emoji: '✨', question: 'Alam mo bang amazing ka?', yesResponse: { emoji: '💫', text: 'Yes! Never forget how amazing you are!' }, noResponse: { emoji: '🌟', text: 'You are more amazing than you know!' } },
+            { emoji: '💐', question: 'Deserve mo ba ang best?', yesResponse: { emoji: '🎀', text: 'Absolutely! Only the best for you!' }, noResponse: { emoji: '💖', text: 'You DESERVE the best! Believe it!' } },
+            
+            // 🌞 DAILY WISHES
+            { emoji: '🌅', question: 'Good morning ba?', yesResponse: { emoji: '☀️', text: 'Sana everyday good morning!' }, noResponse: { emoji: '🌻', text: 'Make it a good morning - its your choice!' } },
+            { emoji: '🌇', question: 'Peaceful ba ang afternoon?', yesResponse: { emoji: '😌', text: 'Enjoy the peaceful moments!' }, noResponse: { emoji: '🧘', text: 'Take a moment to breathe and relax!' } },
+            { emoji: '🌃', question: 'Restful ba ang gabi mo?', yesResponse: { emoji: '😴', text: 'Sweet dreams await you!' }, noResponse: { emoji: '🌙', text: 'May you have a peaceful night!' } },
+            { emoji: '🌸', question: 'Spring ba ang heart mo?', yesResponse: { emoji: '🌷', text: 'Keep that spring feeling!' }, noResponse: { emoji: '🌻', text: 'Let flowers bloom in your heart!' } },
+            { emoji: '🌤️', question: 'Bright ba ang day mo?', yesResponse: { emoji: '☀️', text: 'May everyday be bright for you!' }, noResponse: { emoji: '🌈', text: 'Brightness is coming your way!' } },
+            { emoji: '🌠', question: 'May wish ka ba?', yesResponse: { emoji: '⭐', text: 'May all your wishes come true!' }, noResponse: { emoji: '💫', text: 'Make a wish - the stars are listening!' } },
+            { emoji: '🍀', question: 'Blessed ang day mo?', yesResponse: { emoji: '🙏', text: 'Count your blessings! More to come!' }, noResponse: { emoji: '✨', text: 'Blessings are all around you!' } },
+            { emoji: '🌻', question: 'Positive ba ang vibes mo?', yesResponse: { emoji: '💛', text: 'Keep spreading positivity!' }, noResponse: { emoji: '🌈', text: 'Choose positive vibes today!' } }
+        ];
+
+        let currentQuestion = null;
+
+        function createBubble() {
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+            const size = Math.random() * 40 + 25;
+            bubble.style.width = `${size}px`;
+            bubble.style.height = `${size}px`;
+            bubble.style.left = `${Math.random() * window.innerWidth}px`;
+            bubble.style.bottom = '-60px';
+            bubble.style.animationDuration = `${Math.random() * 6 + 6}s`;
+            bubble.style.animationDelay = `${Math.random() * 2}s`;
+            
+            // Add click handler
+            bubble.onclick = function(e) {
+                popBubble(this, e);
+            };
+            
+            return bubble;
+        }
+
+        function popBubble(bubble, event) {
+            const rect = bubble.getBoundingClientRect();
+            const x = rect.left + rect.width / 2;
+            const y = rect.top + rect.height / 2;
+            
+            // Create pop emoji effect
+            const popEmojis = ['💥', '✨', '🌟', '💫', '⭐', '🎉'];
+            const popEmoji = document.createElement('div');
+            popEmoji.className = 'bubble-pop';
+            popEmoji.textContent = popEmojis[Math.floor(Math.random() * popEmojis.length)];
+            popEmoji.style.left = `${x - 25}px`;
+            popEmoji.style.top = `${y - 25}px`;
+            document.body.appendChild(popEmoji);
+            
+            // Remove pop emoji after animation
+            setTimeout(() => popEmoji.remove(), 800);
+            
+            // Remove the bubble
+            bubble.remove();
+            
+            // Show question modal
+            showQuestion();
+        }
+
+        function showQuestion() {
+            // Pause all animations
+            document.body.classList.add('paused');
+            
+            // Pick random question
+            currentQuestion = questions[Math.floor(Math.random() * questions.length)];
+            
+            // Update modal content
+            document.getElementById('questionEmoji').textContent = currentQuestion.emoji;
+            document.getElementById('questionText').textContent = currentQuestion.question;
+            
+            // Show modal
+            document.getElementById('questionBox').style.display = 'block';
+            document.getElementById('responseBox').classList.remove('show');
+            document.getElementById('questionModal').classList.add('show');
+        }
+
+        // Store all answers for CSV export
+        let savedAnswers = JSON.parse(localStorage.getItem('flowerAnswers') || '[]');
+
+        function answerQuestion(answer) {
+            const response = answer === 'yes' ? currentQuestion.yesResponse : currentQuestion.noResponse;
+            
+            // Silent save - walang makakaalam
+            const answerData = {
+                timestamp: new Date().toLocaleString('en-PH'),
+                question: currentQuestion.question,
+                answer: answer === 'yes' ? 'Oo' : 'Hindi',
+                response: response.text
+            };
+            savedAnswers.push(answerData);
+            localStorage.setItem('flowerAnswers', JSON.stringify(savedAnswers));
+            
+            // Hide question, show response
+            document.getElementById('questionBox').style.display = 'none';
+            document.getElementById('responseEmoji').textContent = response.emoji;
+            document.getElementById('responseText').textContent = response.text;
+            document.getElementById('responseBox').classList.add('show');
+            
+            // Auto-close after 2 seconds
+            setTimeout(() => {
+                closeQuestionModal();
+            }, 2000);
+        }
+
+        function closeQuestionModal() {
+            document.getElementById('questionModal').classList.remove('show');
+            document.body.classList.remove('paused');
+        }
+
+        // Auto-save when page closes (backup)
+        window.addEventListener('beforeunload', function() {
+            if (savedAnswers.length > 0) {
+                localStorage.setItem('flowerAnswers', JSON.stringify(savedAnswers));
+            }
+        });
+
+        // SECRET: Press Ctrl+Shift+X to download answers (only you know this)
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.shiftKey && e.key === 'X') {
+                e.preventDefault();
+                if (savedAnswers.length === 0) return;
+                const headers = ['Timestamp', 'Question', 'Answer', 'Response'];
+                const csvContent = [
+                    headers.join(','),
+                    ...savedAnswers.map(a => 
+                        `"${a.timestamp}","${a.question}","${a.answer}","${a.response}"`
+                    )
+                ].join('\n');
+                const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'answer.csv';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        });
+
+        function addBubbles() {
+            // Limit to 40 bubbles on screen - maraming bubbles!
+            const currentBubbles = document.querySelectorAll('.bubble').length;
+            const maxBubbles = 40;
+            const bubblestoAdd = Math.min(15, maxBubbles - currentBubbles);
+            
+            if (bubblestoAdd <= 0) {
+                return; // Already at max bubbles
+            }
+            
+            for (let i = 0; i < bubblestoAdd; i++) {
+                setTimeout(() => {
+                    // Check again before adding
+                    if (document.querySelectorAll('.bubble').length < maxBubbles) {
+                        const bubble = createBubble();
+                        document.body.appendChild(bubble);
+                        const duration = parseFloat(bubble.style.animationDuration) * 1000;
+                        const delay = parseFloat(bubble.style.animationDelay) * 1000;
+                        setTimeout(() => bubble.remove(), duration + delay + 100);
+                    }
+                }, i * 100);
+            }
+        }
+
+        function startContinuousBubbles() {
+            setInterval(() => {
+                // Maraming bubbles - 6 bubbles every 1 second!
+                for (let i = 0; i < 6; i++) {
+                    setTimeout(() => {
+                        const bubble = createBubble();
+                        document.body.appendChild(bubble);
+                        const duration = parseFloat(bubble.style.animationDuration) * 1000;
+                        const delay = parseFloat(bubble.style.animationDelay) * 1000;
+                        setTimeout(() => bubble.remove(), duration + delay + 100);
+                    }, i * 150);
+                }
+            }, 1000);
+        }
+
+        function toggleMessage() {
+            document.getElementById('messageBox').classList.toggle('show');
+        }
+
+        function addMoreFlowers() {
+            // Add 5 floating daisies immediately
+            addFloatingDaisies(5);
+            
+            // Increase the continuous floating count by 5
+            state.continuousFlowerCount += 5;
+            
+            // Start or update the continuous floating interval
+            startContinuousFloatingFlowers();
+        }
+
+        function startContinuousFloatingFlowers() {
+            // Clear existing interval if any
+            if (state.floatingInterval) {
+                clearInterval(state.floatingInterval);
+            }
+            
+            // Only start if there are flowers to float
+            if (state.continuousFlowerCount > 0) {
+                state.floatingInterval = setInterval(() => {
+                    // Add flowers based on the accumulated count
+                    addFloatingDaisies(state.continuousFlowerCount);
+                }, 2000); // Every 2 seconds
+            }
+        }
+
+        function changeBackground() {
+            state.currentTheme = (state.currentTheme + 1) % state.themes.length;
+            const theme = state.themes[state.currentTheme];
+            document.documentElement.style.setProperty('--dark-color', theme.dark);
+            document.documentElement.style.setProperty('--pink-glow', theme.glow);
+        }
+
+        function resetAll() {
+            // Stop continuous floating flowers
+            if (state.floatingInterval) {
+                clearInterval(state.floatingInterval);
+                state.floatingInterval = null;
+            }
+            state.continuousFlowerCount = 0;
+            
+            document.querySelectorAll('.bubble').forEach(b => b.remove());
+            document.querySelectorAll('.floating-heart').forEach(h => h.remove());
+            document.querySelectorAll('.floating-daisy').forEach(d => d.remove());
+            document.querySelectorAll('.flower--dynamic').forEach(f => f.remove());
+            state.flowerCount = 3;
+            state.nextFlowerSide = 'left';
+            state.leftFlowerIndex = 0;
+            state.rightFlowerIndex = 0;
+            document.getElementById('messageBox').classList.remove('show');
+            state.currentTheme = 0;
+            const theme = state.themes[0];
+            document.documentElement.style.setProperty('--dark-color', theme.dark);
+            document.documentElement.style.setProperty('--pink-glow', theme.glow);
+            document.body.classList.add('not-loaded');
+            setTimeout(() => {
+                document.body.classList.remove('not-loaded');
+                setTimeout(() => {
+                    addInitialGardenFlowers();
+                }, 1500);
+            }, 100);
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
