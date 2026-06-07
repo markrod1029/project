@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,7 +39,7 @@
             width: 100%;
             height: 100%;
             filter: blur(0.1vmin);
-            background-image: 
+            background-image:
                 radial-gradient(ellipse at top, transparent 0%, var(--dark-color)),
                 radial-gradient(ellipse at bottom, var(--dark-color), var(--pink-glow)),
                 repeating-linear-gradient(220deg, rgb(20, 5, 20) 0px, rgb(20, 5, 20) 19px, transparent 19px, transparent 22px),
@@ -75,10 +76,23 @@
         }
 
         @keyframes heartbeat {
-            0%, 100% { transform: scale(1); }
-            25% { transform: scale(1.1); }
-            50% { transform: scale(1); }
-            75% { transform: scale(1.2); }
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            25% {
+                transform: scale(1.1);
+            }
+
+            50% {
+                transform: scale(1);
+            }
+
+            75% {
+                transform: scale(1.2);
+            }
         }
 
         .message-box {
@@ -99,11 +113,20 @@
             animation: fadeIn 0.5s ease;
         }
 
-        .message-box.show { display: block; }
+        .message-box.show {
+            display: block;
+        }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
-            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
         }
 
         .message-box .close-btn {
@@ -118,7 +141,9 @@
             transition: transform 0.3s;
         }
 
-        .message-box .close-btn:hover { transform: scale(1.2); }
+        .message-box .close-btn:hover {
+            transform: scale(1.2);
+        }
 
         .message-box p {
             font-size: 1.1rem;
@@ -165,10 +190,21 @@
             box-shadow: 0 6px 25px rgba(255, 105, 180, 0.5);
         }
 
-        .btn-message { background: linear-gradient(135deg, rgba(255, 105, 180, 0.8), rgba(255, 20, 147, 0.8)); }
-        .btn-flower { background: linear-gradient(135deg, rgba(76, 175, 80, 0.8), rgba(139, 195, 74, 0.8)); }
-        .btn-background { background: linear-gradient(135deg, rgba(156, 39, 176, 0.8), rgba(233, 30, 99, 0.8)); }
-        .btn-reset { background: linear-gradient(135deg, rgba(244, 67, 54, 0.8), rgba(255, 87, 34, 0.8)); }
+        .btn-message {
+            background: linear-gradient(135deg, rgba(255, 105, 180, 0.8), rgba(255, 20, 147, 0.8));
+        }
+
+        .btn-flower {
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.8), rgba(139, 195, 74, 0.8));
+        }
+
+        .btn-background {
+            background: linear-gradient(135deg, rgba(156, 39, 176, 0.8), rgba(233, 30, 99, 0.8));
+        }
+
+        .btn-reset {
+            background: linear-gradient(135deg, rgba(244, 67, 54, 0.8), rgba(255, 87, 34, 0.8));
+        }
 
         .flowers {
             position: relative;
@@ -191,31 +227,52 @@
             filter: brightness(1.3) drop-shadow(0 0 20px rgba(255, 255, 255, 0.7));
         }
 
-        .flower--1 { animation: moving-flower-1 4s linear infinite; }
-        .flower--1 .flower__line { height: 70vmin; animation-delay: 0.3s; }
+        .flower--1 {
+            animation: moving-flower-1 4s linear infinite;
+        }
+
+        .flower--1 .flower__line {
+            height: 70vmin;
+            animation-delay: 0.3s;
+        }
 
         .flower--2 {
             left: 50%;
             transform: rotate(20deg);
             animation: moving-flower-2 4s linear infinite;
         }
-        .flower--2 .flower__line { height: 60vmin; animation-delay: 0.6s; }
+
+        .flower--2 .flower__line {
+            height: 60vmin;
+            animation-delay: 0.6s;
+        }
 
         .flower--3 {
             left: 50%;
             transform: rotate(-15deg);
             animation: moving-flower-3 4s linear infinite;
         }
-        .flower--3 .flower__line { animation-delay: 0.9s; }
+
+        .flower--3 .flower__line {
+            animation-delay: 0.9s;
+        }
 
         .flower__leafs {
             position: relative;
             animation: blooming-flower 2s backwards;
         }
 
-        .flower__leafs--1 { animation-delay: 1.1s; }
-        .flower__leafs--2 { animation-delay: 1.4s; }
-        .flower__leafs--3 { animation-delay: 1.7s; }
+        .flower__leafs--1 {
+            animation-delay: 1.1s;
+        }
+
+        .flower__leafs--2 {
+            animation-delay: 1.4s;
+        }
+
+        .flower__leafs--3 {
+            animation-delay: 1.7s;
+        }
 
         .flower__leafs::after {
             content: "";
@@ -243,9 +300,18 @@
             box-shadow: inset 0 0 3vmin rgba(255, 255, 255, 0.5);
         }
 
-        .flower__leaf--1 { transform: translate(-10%, 1%) rotateY(40deg) rotateX(-50deg); }
-        .flower__leaf--2 { transform: translate(-50%, -4%) rotateX(40deg); }
-        .flower__leaf--3 { transform: translate(-90%, 0%) rotateY(45deg) rotateX(50deg); }
+        .flower__leaf--1 {
+            transform: translate(-10%, 1%) rotateY(40deg) rotateX(-50deg);
+        }
+
+        .flower__leaf--2 {
+            transform: translate(-50%, -4%) rotateX(40deg);
+        }
+
+        .flower__leaf--3 {
+            transform: translate(-90%, 0%) rotateY(45deg) rotateX(50deg);
+        }
+
         .flower__leaf--4 {
             width: 12vmin;
             height: 12vmin;
@@ -282,7 +348,7 @@
         .flower__line {
             height: 55vmin;
             width: 2vmin;
-            background-image: 
+            background-image:
                 linear-gradient(to left, rgba(0, 0, 0, 0.2), transparent, rgba(255, 255, 255, 0.2)),
                 linear-gradient(to top, transparent 10%, #fff, #fff);
             box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.5);
@@ -302,8 +368,15 @@
             background-image: linear-gradient(to top, rgba(255, 255, 255, 0.4), #fff);
         }
 
-        .flower__line__leaf--1 { transform: rotate(70deg) rotateY(30deg); }
-        .flower__line__leaf--2 { top: 45%; transform: rotate(70deg) rotateY(30deg); }
+        .flower__line__leaf--1 {
+            transform: rotate(70deg) rotateY(30deg);
+        }
+
+        .flower__line__leaf--2 {
+            top: 45%;
+            transform: rotate(70deg) rotateY(30deg);
+        }
+
         .flower__line__leaf--3,
         .flower__line__leaf--4 {
             border-top-right-radius: 0;
@@ -314,7 +387,10 @@
             top: 12%;
             transform: rotate(-70deg) rotateY(30deg);
         }
-        .flower__line__leaf--4 { top: 40%; }
+
+        .flower__line__leaf--4 {
+            top: 40%;
+        }
 
         .flower__light {
             position: absolute;
@@ -327,15 +403,49 @@
             animation: light-ans 4s linear infinite backwards;
         }
 
-        .flower__light:nth-child(odd) { background-color: #fff; }
-        .flower__light--1 { left: -2vmin; animation-delay: 1s; }
-        .flower__light--2 { left: 3vmin; animation-delay: 0.5s; }
-        .flower__light--3 { left: -6vmin; animation-delay: 0.3s; }
-        .flower__light--4 { left: 6vmin; animation-delay: 0.9s; }
-        .flower__light--5 { left: -1vmin; animation-delay: 1.5s; }
-        .flower__light--6 { left: -4vmin; animation-delay: 3s; }
-        .flower__light--7 { left: 3vmin; animation-delay: 2s; }
-        .flower__light--8 { left: -6vmin; animation-delay: 3.5s; }
+        .flower__light:nth-child(odd) {
+            background-color: #fff;
+        }
+
+        .flower__light--1 {
+            left: -2vmin;
+            animation-delay: 1s;
+        }
+
+        .flower__light--2 {
+            left: 3vmin;
+            animation-delay: 0.5s;
+        }
+
+        .flower__light--3 {
+            left: -6vmin;
+            animation-delay: 0.3s;
+        }
+
+        .flower__light--4 {
+            left: 6vmin;
+            animation-delay: 0.9s;
+        }
+
+        .flower__light--5 {
+            left: -1vmin;
+            animation-delay: 1.5s;
+        }
+
+        .flower__light--6 {
+            left: -4vmin;
+            animation-delay: 3s;
+        }
+
+        .flower__light--7 {
+            left: 3vmin;
+            animation-delay: 2s;
+        }
+
+        .flower__light--8 {
+            left: -6vmin;
+            animation-delay: 3.5s;
+        }
 
         .flower__grass {
             --c: #fff;
@@ -351,7 +461,10 @@
             transform: rotate(-48deg) rotateY(40deg);
         }
 
-        .flower__grass--1 { animation: moving-grass 2s linear infinite; }
+        .flower__grass--1 {
+            animation: moving-grass 2s linear infinite;
+        }
+
         .flower__grass--2 {
             left: 2vmin;
             bottom: 10vmin;
@@ -387,14 +500,61 @@
             z-index: 100;
         }
 
-        .flower__grass__leaf--1 { top: -6%; left: 30%; --size: 6vmin; transform: rotate(-20deg); }
-        .flower__grass__leaf--2 { top: -5%; left: -110%; --size: 6vmin; transform: rotate(10deg); }
-        .flower__grass__leaf--3 { top: 5%; left: 60%; --size: 8vmin; transform: rotate(-18deg) rotateX(-20deg); }
-        .flower__grass__leaf--4 { top: 6%; left: -135%; --size: 8vmin; transform: rotate(2deg); }
-        .flower__grass__leaf--5 { top: 20%; left: 60%; --size: 10vmin; transform: rotate(-24deg) rotateX(-20deg); }
-        .flower__grass__leaf--6 { top: 22%; left: -180%; --size: 10vmin; transform: rotate(10deg); }
-        .flower__grass__leaf--7 { top: 39%; left: 70%; --size: 10vmin; transform: rotate(-10deg); }
-        .flower__grass__leaf--8 { top: 40%; left: -215%; --size: 11vmin; transform: rotate(10deg); }
+        .flower__grass__leaf--1 {
+            top: -6%;
+            left: 30%;
+            --size: 6vmin;
+            transform: rotate(-20deg);
+        }
+
+        .flower__grass__leaf--2 {
+            top: -5%;
+            left: -110%;
+            --size: 6vmin;
+            transform: rotate(10deg);
+        }
+
+        .flower__grass__leaf--3 {
+            top: 5%;
+            left: 60%;
+            --size: 8vmin;
+            transform: rotate(-18deg) rotateX(-20deg);
+        }
+
+        .flower__grass__leaf--4 {
+            top: 6%;
+            left: -135%;
+            --size: 8vmin;
+            transform: rotate(2deg);
+        }
+
+        .flower__grass__leaf--5 {
+            top: 20%;
+            left: 60%;
+            --size: 10vmin;
+            transform: rotate(-24deg) rotateX(-20deg);
+        }
+
+        .flower__grass__leaf--6 {
+            top: 22%;
+            left: -180%;
+            --size: 10vmin;
+            transform: rotate(10deg);
+        }
+
+        .flower__grass__leaf--7 {
+            top: 39%;
+            left: 70%;
+            --size: 10vmin;
+            transform: rotate(-10deg);
+        }
+
+        .flower__grass__leaf--8 {
+            top: 40%;
+            left: -215%;
+            --size: 11vmin;
+            transform: rotate(10deg);
+        }
 
         .flower__grass__overlay {
             position: absolute;
@@ -414,11 +574,34 @@
             transform-origin: bottom left;
         }
 
-        .long-g--1 { bottom: 0vmin; transform: scale(0.8) rotate(-5deg); }
-        .long-g--2, .long-g--3 { bottom: -3vmin; left: -35vmin; transform: scale(0.6) rotateX(60deg); }
-        .long-g--3 { left: -17vmin; bottom: 0vmin; }
-        .long-g--4 { left: 25vmin; bottom: -3vmin; transform: scale(0.6) rotateX(60deg); }
-        .long-g--5 { left: 42vmin; bottom: 0vmin; transform: scale(0.8) rotate(2deg); }
+        .long-g--1 {
+            bottom: 0vmin;
+            transform: scale(0.8) rotate(-5deg);
+        }
+
+        .long-g--2,
+        .long-g--3 {
+            bottom: -3vmin;
+            left: -35vmin;
+            transform: scale(0.6) rotateX(60deg);
+        }
+
+        .long-g--3 {
+            left: -17vmin;
+            bottom: 0vmin;
+        }
+
+        .long-g--4 {
+            left: 25vmin;
+            bottom: -3vmin;
+            transform: scale(0.6) rotateX(60deg);
+        }
+
+        .long-g--5 {
+            left: 42vmin;
+            bottom: 0vmin;
+            transform: scale(0.8) rotate(2deg);
+        }
 
         .long-g .leaf {
             --w: 15vmin;
@@ -434,20 +617,45 @@
             transform-origin: bottom center;
         }
 
-        .long-g .leaf--0 { left: 2vmin; animation: leaf-ans-1 4s linear infinite; }
-        .long-g .leaf--1 { --w: 5vmin; --h: 60vmin; animation: leaf-ans-1 4s linear infinite; }
-        .long-g .leaf--2 { --w: 10vmin; --h: 40vmin; left: -0.5vmin; bottom: 5vmin; transform-origin: bottom left; transform: rotateY(-180deg); animation: leaf-ans-2 3s linear infinite; }
-        .long-g .leaf--3 { --w: 5vmin; --h: 30vmin; left: -1vmin; bottom: 3.2vmin; transform-origin: bottom left; transform: rotate(-10deg) rotateY(-180deg); }
+        .long-g .leaf--0 {
+            left: 2vmin;
+            animation: leaf-ans-1 4s linear infinite;
+        }
+
+        .long-g .leaf--1 {
+            --w: 5vmin;
+            --h: 60vmin;
+            animation: leaf-ans-1 4s linear infinite;
+        }
+
+        .long-g .leaf--2 {
+            --w: 10vmin;
+            --h: 40vmin;
+            left: -0.5vmin;
+            bottom: 5vmin;
+            transform-origin: bottom left;
+            transform: rotateY(-180deg);
+            animation: leaf-ans-2 3s linear infinite;
+        }
+
+        .long-g .leaf--3 {
+            --w: 5vmin;
+            --h: 30vmin;
+            left: -1vmin;
+            bottom: 3.2vmin;
+            transform-origin: bottom left;
+            transform: rotate(-10deg) rotateY(-180deg);
+        }
 
         .bubble {
             position: fixed;
             border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, 
-                rgba(255, 255, 255, 0.9), 
-                rgba(255, 182, 193, 0.4) 40%,
-                rgba(255, 105, 180, 0.1) 60%,
-                transparent);
-            box-shadow: 
+            background: radial-gradient(circle at 30% 30%,
+                    rgba(255, 255, 255, 0.9),
+                    rgba(255, 182, 193, 0.4) 40%,
+                    rgba(255, 105, 180, 0.1) 60%,
+                    transparent);
+            box-shadow:
                 inset 0 0 20px rgba(255, 255, 255, 0.5),
                 0 0 10px rgba(255, 105, 180, 0.3);
             pointer-events: auto;
@@ -471,9 +679,20 @@
         }
 
         @keyframes popEmoji {
-            0% { transform: scale(0); opacity: 1; }
-            50% { transform: scale(1.5); opacity: 1; }
-            100% { transform: scale(0.5); opacity: 0; }
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.5);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
         }
 
         /* Question Modal */
@@ -496,8 +715,13 @@
         }
 
         @keyframes fadeInModal {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         .question-box {
@@ -512,9 +736,19 @@
         }
 
         @keyframes bounceIn {
-            0% { transform: scale(0.5); opacity: 0; }
-            70% { transform: scale(1.1); }
-            100% { transform: scale(1); opacity: 1; }
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+
+            70% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
 
         .question-emoji {
@@ -597,9 +831,20 @@
         }
 
         @keyframes floatBubble {
-            0% { transform: translateY(0) translateX(0) scale(1); opacity: 0.8; }
-            50% { transform: translateY(-50vh) translateX(20px) scale(1.1); opacity: 0.6; }
-            100% { transform: translateY(-100vh) translateX(-20px) scale(0.8); opacity: 0; }
+            0% {
+                transform: translateY(0) translateX(0) scale(1);
+                opacity: 0.8;
+            }
+
+            50% {
+                transform: translateY(-50vh) translateX(20px) scale(1.1);
+                opacity: 0.6;
+            }
+
+            100% {
+                transform: translateY(-100vh) translateX(-20px) scale(0.8);
+                opacity: 0;
+            }
         }
 
         .floating-heart {
@@ -611,8 +856,15 @@
         }
 
         @keyframes floatUpHeart {
-            0% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
-            100% { opacity: 0; transform: translateY(-150px) scale(0.5) rotate(20deg); }
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1) rotate(0deg);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-150px) scale(0.5) rotate(20deg);
+            }
         }
 
         /* Floating Daisy Flower */
@@ -641,14 +893,37 @@
             box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
         }
 
-        .floating-daisy .daisy-petal:nth-child(1) { transform: translate(-50%, -100%) rotate(0deg); }
-        .floating-daisy .daisy-petal:nth-child(2) { transform: translate(-50%, -100%) rotate(45deg); }
-        .floating-daisy .daisy-petal:nth-child(3) { transform: translate(-50%, -100%) rotate(90deg); }
-        .floating-daisy .daisy-petal:nth-child(4) { transform: translate(-50%, -100%) rotate(135deg); }
-        .floating-daisy .daisy-petal:nth-child(5) { transform: translate(-50%, -100%) rotate(180deg); }
-        .floating-daisy .daisy-petal:nth-child(6) { transform: translate(-50%, -100%) rotate(225deg); }
-        .floating-daisy .daisy-petal:nth-child(7) { transform: translate(-50%, -100%) rotate(270deg); }
-        .floating-daisy .daisy-petal:nth-child(8) { transform: translate(-50%, -100%) rotate(315deg); }
+        .floating-daisy .daisy-petal:nth-child(1) {
+            transform: translate(-50%, -100%) rotate(0deg);
+        }
+
+        .floating-daisy .daisy-petal:nth-child(2) {
+            transform: translate(-50%, -100%) rotate(45deg);
+        }
+
+        .floating-daisy .daisy-petal:nth-child(3) {
+            transform: translate(-50%, -100%) rotate(90deg);
+        }
+
+        .floating-daisy .daisy-petal:nth-child(4) {
+            transform: translate(-50%, -100%) rotate(135deg);
+        }
+
+        .floating-daisy .daisy-petal:nth-child(5) {
+            transform: translate(-50%, -100%) rotate(180deg);
+        }
+
+        .floating-daisy .daisy-petal:nth-child(6) {
+            transform: translate(-50%, -100%) rotate(225deg);
+        }
+
+        .floating-daisy .daisy-petal:nth-child(7) {
+            transform: translate(-50%, -100%) rotate(270deg);
+        }
+
+        .floating-daisy .daisy-petal:nth-child(8) {
+            transform: translate(-50%, -100%) rotate(315deg);
+        }
 
         .floating-daisy .daisy-center {
             position: absolute;
@@ -663,22 +938,26 @@
         }
 
         @keyframes floatUpDaisy {
-            0% { 
-                opacity: 1; 
-                transform: translateY(0) rotate(0deg) scale(1); 
+            0% {
+                opacity: 1;
+                transform: translateY(0) rotate(0deg) scale(1);
             }
-            25% { 
-                transform: translateY(-25vh) translateX(30px) rotate(45deg) scale(1.1); 
+
+            25% {
+                transform: translateY(-25vh) translateX(30px) rotate(45deg) scale(1.1);
             }
-            50% { 
-                transform: translateY(-50vh) translateX(-20px) rotate(-30deg) scale(0.9); 
+
+            50% {
+                transform: translateY(-50vh) translateX(-20px) rotate(-30deg) scale(0.9);
             }
-            75% { 
-                transform: translateY(-75vh) translateX(25px) rotate(60deg) scale(0.7); 
+
+            75% {
+                transform: translateY(-75vh) translateX(25px) rotate(60deg) scale(0.7);
             }
-            100% { 
-                opacity: 0; 
-                transform: translateY(-100vh) translateX(-10px) rotate(-45deg) scale(0.4); 
+
+            100% {
+                opacity: 0;
+                transform: translateY(-100vh) translateX(-10px) rotate(-45deg) scale(0.4);
             }
         }
 
@@ -697,16 +976,40 @@
         }
 
         @keyframes float-flower {
-            0%, 100% { transform: translateY(0) rotate(var(--rotation, 0deg)) scale(var(--scale, 1)); }
-            25% { transform: translateY(-8px) rotate(calc(var(--rotation, 0deg) + 2deg)) scale(var(--scale, 1)); }
-            50% { transform: translateY(-5px) rotate(calc(var(--rotation, 0deg) - 1deg)) scale(var(--scale, 1)); }
-            75% { transform: translateY(-10px) rotate(calc(var(--rotation, 0deg) + 3deg)) scale(var(--scale, 1)); }
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(var(--rotation, 0deg)) scale(var(--scale, 1));
+            }
+
+            25% {
+                transform: translateY(-8px) rotate(calc(var(--rotation, 0deg) + 2deg)) scale(var(--scale, 1));
+            }
+
+            50% {
+                transform: translateY(-5px) rotate(calc(var(--rotation, 0deg) - 1deg)) scale(var(--scale, 1));
+            }
+
+            75% {
+                transform: translateY(-10px) rotate(calc(var(--rotation, 0deg) + 3deg)) scale(var(--scale, 1));
+            }
         }
 
         @keyframes appear-flower {
-            0% { opacity: 0; transform: translateY(50px) scale(0) rotate(var(--rotation, 0deg)); }
-            60% { opacity: 1; transform: translateY(-20px) scale(var(--scale, 1)) rotate(var(--rotation, 0deg)); }
-            100% { opacity: var(--final-opacity, 1); transform: translateY(0) scale(var(--scale, 1)) rotate(var(--rotation, 0deg)); }
+            0% {
+                opacity: 0;
+                transform: translateY(50px) scale(0) rotate(var(--rotation, 0deg));
+            }
+
+            60% {
+                opacity: 1;
+                transform: translateY(-20px) scale(var(--scale, 1)) rotate(var(--rotation, 0deg));
+            }
+
+            100% {
+                opacity: var(--final-opacity, 1);
+                transform: translateY(0) scale(var(--scale, 1)) rotate(var(--rotation, 0deg));
+            }
         }
 
         .flower--dynamic.appear {
@@ -718,69 +1021,163 @@
         }
 
         @keyframes dance {
-            0%, 100% { transform: rotate(-5deg) scale(1); }
-            25% { transform: rotate(5deg) scale(1.05); }
-            50% { transform: rotate(-3deg) scale(1); }
-            75% { transform: rotate(7deg) scale(1.08); }
+
+            0%,
+            100% {
+                transform: rotate(-5deg) scale(1);
+            }
+
+            25% {
+                transform: rotate(5deg) scale(1.05);
+            }
+
+            50% {
+                transform: rotate(-3deg) scale(1);
+            }
+
+            75% {
+                transform: rotate(7deg) scale(1.08);
+            }
         }
 
         @keyframes light-ans {
-            0% { opacity: 0; transform: translateY(0vmin); }
-            25% { opacity: 1; transform: translateY(-5vmin) translateX(-2vmin); }
-            50% { opacity: 1; transform: translateY(-15vmin) translateX(2vmin); filter: blur(0.2vmin); }
-            75% { transform: translateY(-20vmin) translateX(-2vmin); filter: blur(0.2vmin); }
-            100% { transform: translateY(-30vmin); opacity: 0; filter: blur(1vmin); }
+            0% {
+                opacity: 0;
+                transform: translateY(0vmin);
+            }
+
+            25% {
+                opacity: 1;
+                transform: translateY(-5vmin) translateX(-2vmin);
+            }
+
+            50% {
+                opacity: 1;
+                transform: translateY(-15vmin) translateX(2vmin);
+                filter: blur(0.2vmin);
+            }
+
+            75% {
+                transform: translateY(-20vmin) translateX(-2vmin);
+                filter: blur(0.2vmin);
+            }
+
+            100% {
+                transform: translateY(-30vmin);
+                opacity: 0;
+                filter: blur(1vmin);
+            }
         }
 
         @keyframes moving-flower-1 {
-            0%, 100% { transform: rotate(2deg); }
-            50% { transform: rotate(-2deg); }
+
+            0%,
+            100% {
+                transform: rotate(2deg);
+            }
+
+            50% {
+                transform: rotate(-2deg);
+            }
         }
 
         @keyframes moving-flower-2 {
-            0%, 100% { transform: rotate(18deg); }
-            50% { transform: rotate(14deg); }
+
+            0%,
+            100% {
+                transform: rotate(18deg);
+            }
+
+            50% {
+                transform: rotate(14deg);
+            }
         }
 
         @keyframes moving-flower-3 {
-            0%, 100% { transform: rotate(-18deg); }
-            50% { transform: rotate(-20deg) rotateY(-10deg); }
+
+            0%,
+            100% {
+                transform: rotate(-18deg);
+            }
+
+            50% {
+                transform: rotate(-20deg) rotateY(-10deg);
+            }
         }
 
         @keyframes grow-flower-tree {
-            0% { height: 0; border-radius: 1vmin; }
+            0% {
+                height: 0;
+                border-radius: 1vmin;
+            }
         }
 
         @keyframes blooming-flower {
-            0% { transform: scale(0); }
+            0% {
+                transform: scale(0);
+            }
         }
 
         @keyframes moving-grass {
-            0%, 100% { transform: rotate(-48deg) rotateY(40deg); }
-            50% { transform: rotate(-50deg) rotateY(40deg); }
+
+            0%,
+            100% {
+                transform: rotate(-48deg) rotateY(40deg);
+            }
+
+            50% {
+                transform: rotate(-50deg) rotateY(40deg);
+            }
         }
 
         @keyframes leaf-ans-1 {
-            0%, 100% { transform: rotate(-5deg) scale(1); }
-            50% { transform: rotate(5deg) scale(1.1); }
+
+            0%,
+            100% {
+                transform: rotate(-5deg) scale(1);
+            }
+
+            50% {
+                transform: rotate(5deg) scale(1.1);
+            }
         }
 
         @keyframes leaf-ans-2 {
-            0%, 100% { transform: rotateY(-180deg) rotate(5deg); }
-            50% { transform: rotateY(-180deg) rotate(0deg) scale(1.1); }
+
+            0%,
+            100% {
+                transform: rotateY(-180deg) rotate(5deg);
+            }
+
+            50% {
+                transform: rotateY(-180deg) rotate(0deg) scale(1.1);
+            }
         }
 
-        .grow-ans { animation: grow-ans 2s var(--d) backwards; }
+        .grow-ans {
+            animation: grow-ans 2s var(--d) backwards;
+        }
+
         @keyframes grow-ans {
-            0% { transform: scale(0); opacity: 0; }
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
         }
 
-        .growing-grass { animation: growing-grass-ans 1s 2s backwards; }
+        .growing-grass {
+            animation: growing-grass-ans 1s 2s backwards;
+        }
+
         @keyframes growing-grass-ans {
-            0% { transform: scale(0); }
+            0% {
+                transform: scale(0);
+            }
         }
 
-        .not-loaded * { animation-play-state: paused !important; }
+        .not-loaded * {
+            animation-play-state: paused !important;
+        }
 
         /* Pause all animations when question is shown */
         .paused .bubble,
@@ -795,19 +1192,26 @@
 
         /* Tablet screens */
         @media (max-width: 1024px) {
-            html, body {
+
+            html,
+            body {
                 width: 100%;
                 max-width: 100vw;
                 overflow-x: hidden;
             }
+
             body {
                 align-items: flex-end;
                 padding-bottom: 0;
             }
-            .header h1 { font-size: 1.8rem; }
-            .controls { 
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .controls {
                 position: fixed;
-                gap: 10px; 
+                gap: 10px;
                 padding: 12px;
                 width: 90%;
                 left: 50%;
@@ -818,18 +1222,21 @@
                 backdrop-filter: blur(10px);
                 z-index: 100;
             }
-            .control-btn { 
-                padding: 12px 20px; 
+
+            .control-btn {
+                padding: 12px 20px;
                 font-size: 0.9rem;
                 flex: 1 1 auto;
             }
+
             /* Bigger flowers, positioned just above buttons */
-            .flowers { 
-                transform: scale(0.9); 
+            .flowers {
+                transform: scale(0.9);
                 margin-bottom: 90px;
                 position: relative;
                 bottom: auto;
             }
+
             /* Smaller bubbles on tablet */
             .bubble {
                 max-width: 30px !important;
@@ -837,46 +1244,74 @@
                 min-width: 18px !important;
                 min-height: 18px !important;
             }
-            .question-box { 
-                padding: 25px 30px; 
-                max-width: 500px; 
+
+            .question-box {
+                padding: 25px 30px;
+                max-width: 500px;
                 width: 90%;
-                margin: 0 auto; 
+                margin: 0 auto;
             }
-            .question-emoji { font-size: 3.5rem; }
-            .question-text { font-size: 1.3rem; }
-            .answer-btn { padding: 14px 35px; font-size: 1.05rem; }
-            .response-emoji { font-size: 4rem; }
-            .response-text { font-size: 1.15rem; }
+
+            .question-emoji {
+                font-size: 3.5rem;
+            }
+
+            .question-text {
+                font-size: 1.3rem;
+            }
+
+            .answer-btn {
+                padding: 14px 35px;
+                font-size: 1.05rem;
+            }
+
+            .response-emoji {
+                font-size: 4rem;
+            }
+
+            .response-text {
+                font-size: 1.15rem;
+            }
         }
 
         /* Mobile screens */
         @media (max-width: 768px) {
-            html, body {
+
+            html,
+            body {
                 width: 100%;
                 max-width: 100vw;
                 overflow-x: hidden;
             }
+
             body {
                 align-items: flex-end;
                 justify-content: center;
                 padding-bottom: 0;
             }
-            .header { 
-                padding: 12px 15px; 
+
+            .header {
+                padding: 12px 15px;
                 width: 100%;
             }
-            .header h1 { font-size: 1.4rem; }
-            .heart-icon { font-size: 1.3rem; }
+
+            .header h1 {
+                font-size: 1.4rem;
+            }
+
+            .heart-icon {
+                font-size: 1.3rem;
+            }
+
             /* Buttons fixed at bottom */
-            .controls { 
+            .controls {
                 position: fixed;
-                bottom: 10px; 
+                bottom: 10px;
                 left: 50%;
                 transform: translateX(-50%);
                 width: 95%;
                 max-width: 100%;
-                gap: 8px; 
+                gap: 8px;
                 padding: 10px;
                 flex-wrap: wrap;
                 justify-content: center;
@@ -885,57 +1320,92 @@
                 backdrop-filter: blur(10px);
                 z-index: 100;
             }
-            .control-btn { 
-                padding: 12px 18px; 
+
+            .control-btn {
+                padding: 12px 18px;
                 font-size: 0.85rem;
                 min-width: 45%;
                 flex: 1 1 45%;
                 text-align: center;
             }
+
             /* Bigger flowers, positioned just above buttons */
-            .flowers { 
-                transform: scale(1); 
+            .flowers {
+                transform: scale(1);
                 margin-bottom: 90px;
                 position: relative;
                 bottom: auto;
             }
+
             /* Medium bubbles on mobile */
-            .bubble { 
-                max-width: 40px !important; 
+            .bubble {
+                max-width: 40px !important;
                 max-height: 40px !important;
                 min-width: 25px !important;
                 min-height: 25px !important;
             }
-            .question-box { 
-                padding: 25px 20px; 
+
+            .question-box {
+                padding: 25px 20px;
                 width: 92%;
-                max-width: 92%; 
+                max-width: 92%;
                 margin: 0 auto;
                 border-radius: 20px;
             }
-            .question-emoji { font-size: 3.5rem; margin-bottom: 15px; }
-            .question-text { font-size: 1.15rem; margin-bottom: 20px; line-height: 1.5; }
-            .answer-buttons { gap: 12px; flex-wrap: wrap; width: 100%; }
-            .answer-btn { 
-                padding: 14px 30px; 
+
+            .question-emoji {
+                font-size: 3.5rem;
+                margin-bottom: 15px;
+            }
+
+            .question-text {
+                font-size: 1.15rem;
+                margin-bottom: 20px;
+                line-height: 1.5;
+            }
+
+            .answer-buttons {
+                gap: 12px;
+                flex-wrap: wrap;
+                width: 100%;
+            }
+
+            .answer-btn {
+                padding: 14px 30px;
                 font-size: 1rem;
                 min-width: 120px;
                 flex: 1;
             }
-            .response-emoji { font-size: 4rem; margin-bottom: 15px; }
-            .response-text { font-size: 1.1rem; padding: 0 15px; line-height: 1.5; }
-            .close-response-btn { 
-                padding: 12px 30px; 
+
+            .response-emoji {
+                font-size: 4rem;
+                margin-bottom: 15px;
+            }
+
+            .response-text {
+                font-size: 1.1rem;
+                padding: 0 15px;
+                line-height: 1.5;
+            }
+
+            .close-response-btn {
+                padding: 12px 30px;
                 font-size: 1rem;
                 margin-top: 20px;
             }
-            .message-box { 
-                padding: 25px 20px; 
+
+            .message-box {
+                padding: 25px 20px;
                 width: 92%;
                 max-width: 92%;
                 margin: 0 auto;
             }
-            .message-box p { font-size: 1.05rem; line-height: 1.6; }
+
+            .message-box p {
+                font-size: 1.05rem;
+                line-height: 1.6;
+            }
+
             #mute-btn {
                 width: 50px;
                 height: 50px;
@@ -945,21 +1415,34 @@
 
         /* Small mobile screens */
         @media (max-width: 480px) {
-            html, body {
+
+            html,
+            body {
                 width: 100%;
                 max-width: 100vw;
                 overflow-x: hidden;
             }
+
             body {
                 align-items: flex-end;
                 justify-content: center;
                 padding-bottom: 0;
             }
-            .header { padding: 10px 12px; }
-            .header h1 { font-size: 1.2rem; }
-            .heart-icon { font-size: 1.1rem; }
+
+            .header {
+                padding: 10px 12px;
+            }
+
+            .header h1 {
+                font-size: 1.2rem;
+            }
+
+            .heart-icon {
+                font-size: 1.1rem;
+            }
+
             /* Buttons fixed at very bottom */
-            .controls { 
+            .controls {
                 position: fixed;
                 bottom: 8px;
                 width: 96%;
@@ -967,40 +1450,58 @@
                 padding: 8px;
                 z-index: 100;
             }
-            .control-btn { 
-                padding: 10px 12px; 
+
+            .control-btn {
+                padding: 10px 12px;
                 font-size: 0.8rem;
                 min-width: 48%;
                 flex: 1 1 48%;
             }
+
             /* Bigger flowers, positioned just above buttons */
-            .flowers { 
-                transform: scale(0.85); 
+            .flowers {
+                transform: scale(0.85);
                 margin-bottom: 85px;
                 position: relative;
                 bottom: auto;
             }
+
             /* Medium bubbles on small mobile */
-            .bubble { 
-                max-width: 35px !important; 
+            .bubble {
+                max-width: 35px !important;
                 max-height: 35px !important;
                 min-width: 20px !important;
                 min-height: 20px !important;
             }
-            .question-box { 
-                padding: 20px 15px; 
+
+            .question-box {
+                padding: 20px 15px;
                 width: 94%;
                 max-width: 94%;
             }
-            .question-emoji { font-size: 3rem; }
-            .question-text { font-size: 1.05rem; }
-            .answer-btn { 
-                padding: 12px 24px; 
+
+            .question-emoji {
+                font-size: 3rem;
+            }
+
+            .question-text {
+                font-size: 1.05rem;
+            }
+
+            .answer-btn {
+                padding: 12px 24px;
                 font-size: 0.95rem;
                 min-width: 110px;
             }
-            .response-emoji { font-size: 3.5rem; }
-            .response-text { font-size: 1rem; }
+
+            .response-emoji {
+                font-size: 3.5rem;
+            }
+
+            .response-text {
+                font-size: 1rem;
+            }
+
             #mute-btn {
                 width: 46px;
                 height: 46px;
@@ -1087,11 +1588,21 @@
         }
 
         @keyframes overlay-pulse {
-            0%, 100% { opacity: 0.9; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.05); }
+
+            0%,
+            100% {
+                opacity: 0.9;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
         }
     </style>
 </head>
+
 <body class="not-loaded">
     <div class="night"></div>
 
@@ -1114,7 +1625,19 @@
 
     <div class="message-box" id="messageBox">
         <button class="close-btn" onclick="toggleMessage()">&times;</button>
-        <p>"Life is like a beautiful flower which I may not touch, but whose fragrance makes the garden a place of delight just the same."</p>
+        <p>"Alam mo, hindi ako madalas magsabi ng ganito, pero gusto ko lang maging totoo sa nararamdaman ko. Kasi kapag
+            nakikita kita, parang ang saya saya lang sa pakiramdam yung tipong hindi mo maipaliwanag, pero alam mong
+            totoo. Ang ganda mo, oo. Pero hindi lang yun.
+            Iba yung klase ng ganda mo yung tipong kahit anong ayos mo, ang natural at ang totoo ng dating mo sakin.
+            Tapos maririnig kitang kumanta… Grabe. Parang ang gaan ng lahat. Para kang may sariling anghel na boses na
+            nakakapagpa-kalma ng magulong mundo ko. Ang hindi ko makakalimutan,
+            yung pagiging authentic mo bilang babae.
+            Yung hindi mo kailangan magpanggap o magmadali para mapansin. Ikaw lang, ganun ka na most genuine at
+            beautiful person sa paningin ko. Hindi ko sure kung mababasa mo to.
+            Kilala kita ang baba ng probability. Hahaha. Pero kung mababasa mo to… lagot. Hmm. Pero seryoso, kung mabasa
+            mo,
+            gusto ko lang malaman mo: gusto kita. Kilala mo naman ako hindi ko kailangan ng sagot. Hindi ko hinihingi
+            yun. Gusto ko lang malaman mo, kung sakali. At masaya na ako na nakilala kita. Yun lang."</p>
     </div>
 
     <!-- Question Modal -->
@@ -1251,31 +1774,63 @@
 
         <!-- Long Grass -->
         <div class="long-g long-g--0">
-            <div class="grow-ans" style="--d:3s"><div class="leaf leaf--0"></div></div>
-            <div class="grow-ans" style="--d:2.2s"><div class="leaf leaf--1"></div></div>
-            <div class="grow-ans" style="--d:3.4s"><div class="leaf leaf--2"></div></div>
-            <div class="grow-ans" style="--d:3.6s"><div class="leaf leaf--3"></div></div>
+            <div class="grow-ans" style="--d:3s">
+                <div class="leaf leaf--0"></div>
+            </div>
+            <div class="grow-ans" style="--d:2.2s">
+                <div class="leaf leaf--1"></div>
+            </div>
+            <div class="grow-ans" style="--d:3.4s">
+                <div class="leaf leaf--2"></div>
+            </div>
+            <div class="grow-ans" style="--d:3.6s">
+                <div class="leaf leaf--3"></div>
+            </div>
         </div>
 
         <div class="long-g long-g--1">
-            <div class="grow-ans" style="--d:3.6s"><div class="leaf leaf--0"></div></div>
-            <div class="grow-ans" style="--d:3.8s"><div class="leaf leaf--1"></div></div>
-            <div class="grow-ans" style="--d:4s"><div class="leaf leaf--2"></div></div>
-            <div class="grow-ans" style="--d:4.2s"><div class="leaf leaf--3"></div></div>
+            <div class="grow-ans" style="--d:3.6s">
+                <div class="leaf leaf--0"></div>
+            </div>
+            <div class="grow-ans" style="--d:3.8s">
+                <div class="leaf leaf--1"></div>
+            </div>
+            <div class="grow-ans" style="--d:4s">
+                <div class="leaf leaf--2"></div>
+            </div>
+            <div class="grow-ans" style="--d:4.2s">
+                <div class="leaf leaf--3"></div>
+            </div>
         </div>
 
         <div class="long-g long-g--4">
-            <div class="grow-ans" style="--d:4s"><div class="leaf leaf--0"></div></div>
-            <div class="grow-ans" style="--d:4.2s"><div class="leaf leaf--1"></div></div>
-            <div class="grow-ans" style="--d:3s"><div class="leaf leaf--2"></div></div>
-            <div class="grow-ans" style="--d:3.6s"><div class="leaf leaf--3"></div></div>
+            <div class="grow-ans" style="--d:4s">
+                <div class="leaf leaf--0"></div>
+            </div>
+            <div class="grow-ans" style="--d:4.2s">
+                <div class="leaf leaf--1"></div>
+            </div>
+            <div class="grow-ans" style="--d:3s">
+                <div class="leaf leaf--2"></div>
+            </div>
+            <div class="grow-ans" style="--d:3.6s">
+                <div class="leaf leaf--3"></div>
+            </div>
         </div>
 
         <div class="long-g long-g--5">
-            <div class="grow-ans" style="--d:4s"><div class="leaf leaf--0"></div></div>
-            <div class="grow-ans" style="--d:4.2s"><div class="leaf leaf--1"></div></div>
-            <div class="grow-ans" style="--d:3s"><div class="leaf leaf--2"></div></div>
-            <div class="grow-ans" style="--d:3.6s"><div class="leaf leaf--3"></div></div>
+            <div class="grow-ans" style="--d:4s">
+                <div class="leaf leaf--0"></div>
+            </div>
+            <div class="grow-ans" style="--d:4.2s">
+                <div class="leaf leaf--1"></div>
+            </div>
+            <div class="grow-ans" style="--d:3s">
+                <div class="leaf leaf--2"></div>
+            </div>
+            <div class="grow-ans" style="--d:3.6s">
+                <div class="leaf leaf--3"></div>
+            </div>
         </div>
     </div>
 
@@ -1299,7 +1854,7 @@
             pianoStarted = true;
             initPiano();
             if (pianoAudio) {
-                pianoAudio.play().catch(function(e) {
+                pianoAudio.play().catch(function (e) {
                     console.log('Audio play failed:', e);
                 });
             }
@@ -1403,13 +1958,13 @@
             const muteBtn = document.getElementById('mute-btn');
             const startOverlay = document.getElementById('start-overlay');
 
-            muteBtn.addEventListener('click', function(e) {
+            muteBtn.addEventListener('click', function (e) {
                 e.stopPropagation();
                 toggleMute();
             });
 
             startOverlay.addEventListener('click', dismissStartOverlay);
-            startOverlay.addEventListener('keydown', function(e) {
+            startOverlay.addEventListener('keydown', function (e) {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
                     dismissStartOverlay();
@@ -1425,7 +1980,7 @@
                 { left: 92, bottom: 25, scale: 1.1 },    // malaki sa taas right
                 { left: 12, bottom: 15, scale: 0.8 },    // medium left
             ];
-            
+
             gardenPositions.forEach((pos, i) => {
                 setTimeout(() => {
                     const flower = createGardenFlower(pos.left, pos.bottom, pos.scale);
@@ -1438,14 +1993,14 @@
         function createGardenFlower(leftPercent, bottomVmin, scale) {
             const flower = document.createElement('div');
             flower.className = 'flower flower--dynamic appear';
-            flower.onclick = function(e) { handleFlowerClick(this, e); };
-            
+            flower.onclick = function (e) { handleFlowerClick(this, e); };
+
             const rotation = (Math.random() * 20 - 10);
             const blur = scale < 0.4 ? 0.5 : 0;
             const opacity = scale < 0.4 ? 0.6 : (0.85 + Math.random() * 0.15);
             const zIndex = Math.floor(scale * 12);
             const stemHeight = 20 + scale * 40;
-            
+
             flower.style.position = 'fixed';
             flower.style.left = `${leftPercent}%`;
             flower.style.bottom = `${bottomVmin}vmin`;
@@ -1455,13 +2010,13 @@
             flower.style.zIndex = zIndex;
             flower.style.filter = blur > 0 ? `blur(${blur}px)` : 'none';
             flower.style.transformOrigin = 'bottom center';
-            
+
             const animDelay = Math.random() * 2;
             flower.style.animationDelay = `0s, ${animDelay}s`;
 
             const leafs = document.createElement('div');
             leafs.className = 'flower__leafs';
-            
+
             for (let i = 1; i <= 4; i++) {
                 const leaf = document.createElement('div');
                 leaf.className = `flower__leaf flower__leaf--${i}`;
@@ -1500,11 +2055,11 @@
         function createDaisyFlower() {
             const flower = document.createElement('div');
             flower.className = 'flower flower--dynamic appear';
-            flower.onclick = function(e) { handleFlowerClick(this, e); };
-            
+            flower.onclick = function (e) { handleFlowerClick(this, e); };
+
             const verticalPos = Math.random() * 100;
             let scale, blur, opacity, zIndex, stemHeight;
-            
+
             if (verticalPos < 25) {
                 scale = 0.25 + Math.random() * 0.15;
                 blur = 1;
@@ -1530,11 +2085,11 @@
                 zIndex = 10;
                 stemHeight = 45 + Math.random() * 20;
             }
-            
+
             const leftPercent = 5 + Math.random() * 90;
             const rotation = (Math.random() * 30 - 15);
             const bottomPos = 5 + (100 - verticalPos) * 0.5;
-            
+
             flower.style.position = 'fixed';
             flower.style.left = `${leftPercent}%`;
             flower.style.bottom = `${bottomPos}vmin`;
@@ -1544,13 +2099,13 @@
             flower.style.zIndex = zIndex;
             flower.style.filter = blur > 0 ? `blur(${blur}px)` : 'none';
             flower.style.transformOrigin = 'bottom center';
-            
+
             const animDelay = Math.random() * 2;
             flower.style.animationDelay = `0s, ${animDelay}s`;
 
             const leafs = document.createElement('div');
             leafs.className = 'flower__leafs';
-            
+
             for (let i = 1; i <= 4; i++) {
                 const leaf = document.createElement('div');
                 leaf.className = `flower__leaf flower__leaf--${i}`;
@@ -1622,30 +2177,30 @@
         function createFloatingDaisy() {
             const daisy = document.createElement('div');
             daisy.className = 'floating-daisy';
-            
+
             const petals = document.createElement('div');
             petals.className = 'daisy-petals';
-            
+
             // Create 8 petals
             for (let i = 0; i < 8; i++) {
                 const petal = document.createElement('div');
                 petal.className = 'daisy-petal';
                 petals.appendChild(petal);
             }
-            
+
             // Create center
             const center = document.createElement('div');
             center.className = 'daisy-center';
             petals.appendChild(center);
-            
+
             daisy.appendChild(petals);
-            
+
             // Random position at bottom
             const scale = 0.6 + Math.random() * 0.8;
             daisy.style.left = `${Math.random() * (window.innerWidth - 50)}px`;
             daisy.style.bottom = '0px';
             daisy.style.transform = `scale(${scale})`;
-            
+
             return daisy;
         }
 
@@ -1671,7 +2226,7 @@
             { emoji: '💕', question: 'Feel mo bang loved ka?', yesResponse: { emoji: '🥰', text: 'You deserve all the love in the world!' }, noResponse: { emoji: '💖', text: 'You are loved more than you know!' } },
             { emoji: '🙏', question: 'Grateful ka ba today?', yesResponse: { emoji: '✨', text: 'Grateful hearts attract more blessings!' }, noResponse: { emoji: '🌟', text: 'May maraming dapat ikagrateful - look around!' } },
             { emoji: '🌟', question: 'Naniniwala ka ba sa sarili mo?', yesResponse: { emoji: '💪', text: 'Good! Never stop believing in yourself!' }, noResponse: { emoji: '🤗', text: 'Ako naniniwala sayo! You got this!' } },
-            
+
             // 💖 ENCOURAGEMENT
             { emoji: '🌷', question: 'Kumain ka na ba?', yesResponse: { emoji: '😋', text: 'Good! Healthy body, happy soul!' }, noResponse: { emoji: '🍕', text: 'Kain na! You deserve good food!' } },
             { emoji: '😴', question: 'Nakapahinga ka na ba?', yesResponse: { emoji: '😌', text: 'Rest is self-love! Keep it up!' }, noResponse: { emoji: '🛋️', text: 'Pahinga ka ha? You deserve rest!' } },
@@ -1681,7 +2236,7 @@
             { emoji: '🌙', question: 'Peaceful ba ang gabi mo?', yesResponse: { emoji: '✨', text: 'Sweet dreams await you!' }, noResponse: { emoji: '🧘', text: 'May peace find your heart tonight!' } },
             { emoji: '🦋', question: 'Feel mo bang free ka?', yesResponse: { emoji: '🕊️', text: 'Fly high! The sky is yours!' }, noResponse: { emoji: '💫', text: 'Let go of worries - be free!' } },
             { emoji: '🎵', question: 'May song ka ba sa heart?', yesResponse: { emoji: '🎶', text: 'Keep the music alive in you!' }, noResponse: { emoji: '🎧', text: 'Find your song - life is beautiful!' } },
-            
+
             // 🌺 WARM WISHES
             { emoji: '🌺', question: 'Sana masaya ka today?', yesResponse: { emoji: '🥰', text: 'Yay! Sana everyday ganyan!' }, noResponse: { emoji: '🌸', text: 'Darating din ang happiness mo!' } },
             { emoji: '💐', question: 'Gusto mo ng virtual flowers?', yesResponse: { emoji: '🌷', text: 'Here! All flowers for you! 💐🌸🌺' }, noResponse: { emoji: '⭐', text: 'Okay, stars na lang! ⭐✨💫' } },
@@ -1691,7 +2246,7 @@
             { emoji: '🎀', question: 'Feel mo bang blessed ka?', yesResponse: { emoji: '🙏', text: 'More blessings are coming!' }, noResponse: { emoji: '✨', text: 'You are more blessed than you know!' } },
             { emoji: '🌞', question: 'Sunshine ka ba today?', yesResponse: { emoji: '☀️', text: 'Keep shining bright!' }, noResponse: { emoji: '🌈', text: 'Be someones sunshine today!' } },
             { emoji: '💝', question: 'May nag-aalaga ba sayo?', yesResponse: { emoji: '🥰', text: 'Cherish those who love you!' }, noResponse: { emoji: '💖', text: 'You are cared for - believe it!' } },
-            
+
             // 🌈 POSITIVITY
             { emoji: '⭐', question: 'Star ka ba today?', yesResponse: { emoji: '🌟', text: 'Shine bright like a star!' }, noResponse: { emoji: '✨', text: 'You are a star! Believe it!' } },
             { emoji: '🌊', question: 'Calm ba ang waves mo?', yesResponse: { emoji: '🏖️', text: 'Peace like the ocean - beautiful!' }, noResponse: { emoji: '🌅', text: 'After every storm comes calm!' } },
@@ -1701,7 +2256,7 @@
             { emoji: '🌿', question: 'Growing ka ba?', yesResponse: { emoji: '🌳', text: 'Keep growing! You are amazing!' }, noResponse: { emoji: '🌱', text: 'Every day is a chance to grow!' } },
             { emoji: '💎', question: 'Alam mo bang valuable ka?', yesResponse: { emoji: '✨', text: 'Yes! You are priceless!' }, noResponse: { emoji: '💖', text: 'You are a rare gem - never forget!' } },
             { emoji: '🏆', question: 'Winner ka ba today?', yesResponse: { emoji: '🥇', text: 'Champion vibes! Keep winning!' }, noResponse: { emoji: '💪', text: 'You are a winner in progress!' } },
-            
+
             // 💫 COMFORT
             { emoji: '🌙', question: 'Okay lang ba lahat?', yesResponse: { emoji: '😊', text: 'Glad to hear! Keep smiling!' }, noResponse: { emoji: '🤗', text: 'Its okay not to be okay. I am here!' } },
             { emoji: '💭', question: 'May bumabagabag ba sayo?', yesResponse: { emoji: '🤝', text: 'Let it go. You will be okay!' }, noResponse: { emoji: '😌', text: 'Good! Peace of mind is precious!' } },
@@ -1711,7 +2266,7 @@
             { emoji: '💫', question: 'Hopeful ka ba?', yesResponse: { emoji: '🌟', text: 'Hope is beautiful! Keep it alive!' }, noResponse: { emoji: '🌈', text: 'There is always hope! Believe!' } },
             { emoji: '🌻', question: 'May reason ka ba to smile?', yesResponse: { emoji: '😊', text: 'Keep collecting reasons to smile!' }, noResponse: { emoji: '🌸', text: 'You ARE the reason to smile!' } },
             { emoji: '💗', question: 'Full ba ang heart mo?', yesResponse: { emoji: '💖', text: 'A full heart is a blessed heart!' }, noResponse: { emoji: '💕', text: 'Filling your heart with love now!' } },
-            
+
             // 🎊 CELEBRATION
             { emoji: '🎂', question: 'Celebrate ka ba today?', yesResponse: { emoji: '🥳', text: 'Every day is worth celebrating!' }, noResponse: { emoji: '🎉', text: 'Celebrate small wins! You are doing great!' } },
             { emoji: '🎁', question: 'May surprise ka ba today?', yesResponse: { emoji: '🎀', text: 'Life is full of beautiful surprises!' }, noResponse: { emoji: '✨', text: 'Surprise is on its way to you!' } },
@@ -1721,7 +2276,7 @@
             { emoji: '💃', question: 'Dancing ka ba sa life?', yesResponse: { emoji: '🕺', text: 'Dance through life! Joy!' }, noResponse: { emoji: '🎵', text: 'Dance even without music!' } },
             { emoji: '📸', question: 'May captured moments ka ba?', yesResponse: { emoji: '🖼️', text: 'Memories are treasures!' }, noResponse: { emoji: '📷', text: 'Create beautiful memories today!' } },
             { emoji: '🌟', question: 'Shining ka ba?', yesResponse: { emoji: '✨', text: 'Keep shining! The world needs your light!' }, noResponse: { emoji: '💫', text: 'Shine anyway! Your light matters!' } },
-            
+
             // 🌷 SELF-LOVE
             { emoji: '💖', question: 'Love mo ba sarili mo?', yesResponse: { emoji: '🥰', text: 'Self-love is the best love!' }, noResponse: { emoji: '💕', text: 'Start loving yourself - you deserve it!' } },
             { emoji: '👑', question: 'Royalty ba ang feeling mo?', yesResponse: { emoji: '👸', text: 'You are royalty! Act like it!' }, noResponse: { emoji: '💎', text: 'You are a queen/king! Own it!' } },
@@ -1731,7 +2286,7 @@
             { emoji: '🌺', question: 'Blooming ka ba?', yesResponse: { emoji: '🌷', text: 'Keep blooming beautifully!' }, noResponse: { emoji: '🌱', text: 'Your time to bloom is coming!' } },
             { emoji: '✨', question: 'Alam mo bang amazing ka?', yesResponse: { emoji: '💫', text: 'Yes! Never forget how amazing you are!' }, noResponse: { emoji: '🌟', text: 'You are more amazing than you know!' } },
             { emoji: '💐', question: 'Deserve mo ba ang best?', yesResponse: { emoji: '🎀', text: 'Absolutely! Only the best for you!' }, noResponse: { emoji: '💖', text: 'You DESERVE the best! Believe it!' } },
-            
+
             // 🌞 DAILY WISHES
             { emoji: '🌅', question: 'Good morning ba?', yesResponse: { emoji: '☀️', text: 'Sana everyday good morning!' }, noResponse: { emoji: '🌻', text: 'Make it a good morning - its your choice!' } },
             { emoji: '🌇', question: 'Peaceful ba ang afternoon?', yesResponse: { emoji: '😌', text: 'Enjoy the peaceful moments!' }, noResponse: { emoji: '🧘', text: 'Take a moment to breathe and relax!' } },
@@ -1769,23 +2324,23 @@
             bubble.style.bottom = '-60px';
             bubble.style.animationDuration = `${Math.random() * 6 + 6}s`;
             bubble.style.animationDelay = `${Math.random() * 2}s`;
-            
+
             // Add click handler
-            bubble.onclick = function(e) {
+            bubble.onclick = function (e) {
                 popBubble(this, e);
             };
-            
+
             return bubble;
         }
 
         function popBubble(bubble, event) {
             if (!overlayDismissed) dismissStartOverlay();
             playChime();
-            
+
             const rect = bubble.getBoundingClientRect();
             const x = rect.left + rect.width / 2;
             const y = rect.top + rect.height / 2;
-            
+
             // Create pop emoji effect
             const popEmojis = ['💥', '✨', '🌟', '💫', '⭐', '🎉'];
             const popEmoji = document.createElement('div');
@@ -1794,13 +2349,13 @@
             popEmoji.style.left = `${x - 25}px`;
             popEmoji.style.top = `${y - 25}px`;
             document.body.appendChild(popEmoji);
-            
+
             // Remove pop emoji after animation
             setTimeout(() => popEmoji.remove(), 800);
-            
+
             // Remove the bubble
             bubble.remove();
-            
+
             // Show question modal
             showQuestion();
         }
@@ -1808,14 +2363,14 @@
         function showQuestion() {
             // Pause all animations
             document.body.classList.add('paused');
-            
+
             // Pick random question
             currentQuestion = questions[Math.floor(Math.random() * questions.length)];
-            
+
             // Update modal content
             document.getElementById('questionEmoji').textContent = currentQuestion.emoji;
             document.getElementById('questionText').textContent = currentQuestion.question;
-            
+
             // Show modal
             document.getElementById('questionBox').style.display = 'block';
             document.getElementById('responseBox').classList.remove('show');
@@ -1827,7 +2382,7 @@
 
         function answerQuestion(answer) {
             const response = answer === 'yes' ? currentQuestion.yesResponse : currentQuestion.noResponse;
-            
+
             // Silent save - walang makakaalam
             const answerData = {
                 timestamp: new Date().toLocaleString('en-PH'),
@@ -1837,13 +2392,13 @@
             };
             savedAnswers.push(answerData);
             localStorage.setItem('flowerAnswers', JSON.stringify(savedAnswers));
-            
+
             // Hide question, show response
             document.getElementById('questionBox').style.display = 'none';
             document.getElementById('responseEmoji').textContent = response.emoji;
             document.getElementById('responseText').textContent = response.text;
             document.getElementById('responseBox').classList.add('show');
-            
+
             // Auto-close after 2 seconds
             setTimeout(() => {
                 closeQuestionModal();
@@ -1856,21 +2411,21 @@
         }
 
         // Auto-save when page closes (backup)
-        window.addEventListener('beforeunload', function() {
+        window.addEventListener('beforeunload', function () {
             if (savedAnswers.length > 0) {
                 localStorage.setItem('flowerAnswers', JSON.stringify(savedAnswers));
             }
         });
 
         // SECRET: Press Ctrl+Shift+X to download answers (only you know this)
-        document.addEventListener('keydown', function(e) {
+        document.addEventListener('keydown', function (e) {
             if (e.ctrlKey && e.shiftKey && e.key === 'X') {
                 e.preventDefault();
                 if (savedAnswers.length === 0) return;
                 const headers = ['Timestamp', 'Question', 'Answer', 'Response'];
                 const csvContent = [
                     headers.join(','),
-                    ...savedAnswers.map(a => 
+                    ...savedAnswers.map(a =>
                         `"${a.timestamp}","${a.question}","${a.answer}","${a.response}"`
                     )
                 ].join('\n');
@@ -1889,7 +2444,7 @@
             const isMobile = window.innerWidth <= 768;
             const isSmallMobile = window.innerWidth <= 480;
             let maxBubbles, bubblesPerAdd;
-            
+
             if (isSmallMobile) {
                 maxBubbles = 10;
                 bubblesPerAdd = 3;
@@ -1900,14 +2455,14 @@
                 maxBubbles = 40;
                 bubblesPerAdd = 15;
             }
-            
+
             const currentBubbles = document.querySelectorAll('.bubble').length;
             const bubblestoAdd = Math.min(bubblesPerAdd, maxBubbles - currentBubbles);
-            
+
             if (bubblestoAdd <= 0) {
                 return; // Already at max bubbles
             }
-            
+
             for (let i = 0; i < bubblestoAdd; i++) {
                 setTimeout(() => {
                     // Check again before adding
@@ -1935,7 +2490,7 @@
                 } else {
                     bubbleCount = 6; // Marami sa desktop
                 }
-                
+
                 for (let i = 0; i < bubbleCount; i++) {
                     setTimeout(() => {
                         const bubble = createBubble();
@@ -1955,10 +2510,10 @@
         function addMoreFlowers() {
             // Add 5 floating daisies immediately
             addFloatingDaisies(5);
-            
+
             // Increase the continuous floating count by 5
             state.continuousFlowerCount += 5;
-            
+
             // Start or update the continuous floating interval
             startContinuousFloatingFlowers();
         }
@@ -1968,7 +2523,7 @@
             if (state.floatingInterval) {
                 clearInterval(state.floatingInterval);
             }
-            
+
             // Only start if there are flowers to float
             if (state.continuousFlowerCount > 0) {
                 state.floatingInterval = setInterval(() => {
@@ -1992,7 +2547,7 @@
                 state.floatingInterval = null;
             }
             state.continuousFlowerCount = 0;
-            
+
             document.querySelectorAll('.bubble').forEach(b => b.remove());
             document.querySelectorAll('.floating-heart').forEach(h => h.remove());
             document.querySelectorAll('.floating-daisy').forEach(d => d.remove());
@@ -2018,4 +2573,5 @@
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
+
 </html>
